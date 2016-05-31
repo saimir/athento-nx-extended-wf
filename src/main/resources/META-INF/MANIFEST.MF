@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.athento.nuxeo.athento-nx-extended-wf
+Bundle-Version: 1.1
+Bundle-Name: athento-nx-extended-wf
+Require-Bundle: org.nuxeo.runtime
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Athento
+Nuxeo-Component: OSGI-INF/Automation/Automation-chains/chains-contrib.xml,
+ OSGI-INF/Workflows/workflow-doctype-contrib.xml,
+ OSGI-INF/Workflows/workflow-layout-contrib.xml,
+ OSGI-INF/Workflows/workflow-contrib.xml
+Created-By: Athento
+

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component
+	name="org.athento.nuxeo.athento-nx-extended-wf.workflow-doctype"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.core.schema.TypeService"
+		point="doctype">
+
+		<facet name="facet-var_fourthTask">
+			<schema name="var_fourthTask" />
+		</facet>
+		<facet name="facet-var_firstTask">
+			<schema name="var_firstTask" />
+		</facet>
+		<facet name="facet-var_secondTask">
+			<schema name="var_secondTask" />
+		</facet>
+		<facet name="facet-var_thirdTask">
+			<schema name="var_thirdTask" />
+		</facet>
+		<facet name="facet-var_last-evaluation">
+			<schema name="var_last-evaluation" />
+		</facet>
+		<facet name="facet-var_fifthTask">
+			<schema name="var_fifthTask" />
+		</facet>
+		<facet name="facet-var_pre-evaluation">
+			<schema name="var_pre-evaluation" />
+		</facet>
+		<facet name="facet-var_finishTask">
+			<schema name="var_finishTask" />
+		</facet>
+		<facet name="facet-var_start-node">
+			<schema name="var_start-node" />
+		</facet>
+		<facet name="facet-var_stop-node">
+			<schema name="var_stop-node" />
+		</facet>
+		<facet name="facet-var_extended-wf">
+			<schema name="var_extended-wf" />
+		</facet>
+
+	</extension>
+
+	<extension target="org.nuxeo.ecm.platform.types.TypeService"
+		point="types">
+
+	</extension>
+
+	<extension target="org.nuxeo.ecm.core.schema.TypeService"
+		point="schema">
+		<schema name="var_fourthTask" prefix="var_fourthTask" override="true"
+			src="data/schemas/var_fourthTask.xsd" />
+		<schema name="var_firstTask" prefix="var_firstTask" override="true"
+			src="data/schemas/var_firstTask.xsd" />
+		<schema name="var_secondTask" prefix="var_secondTask" override="true"
+			src="data/schemas/var_secondTask.xsd" />
+		<schema name="var_thirdTask" prefix="var_thirdTask" override="true"
+			src="data/schemas/var_thirdTask.xsd" />
+		<schema name="var_last-evaluation" prefix="var_last-evaluation" override="true"
+			src="data/schemas/var_last-evaluation.xsd" />
+		<schema name="var_fifthTask" prefix="var_fifthTask" override="true"
+			src="data/schemas/var_fifthTask.xsd" />
+		<schema name="var_pre-evaluation" prefix="var_pre-evaluation" override="true"
+			src="data/schemas/var_pre-evaluation.xsd" />
+		<schema name="var_finishTask" prefix="var_finishTask" override="true"
+			src="data/schemas/var_finishTask.xsd" />
+		<schema name="var_start-node" prefix="var_start-node" override="true"
+			src="data/schemas/var_start-node.xsd" />
+		<schema name="var_stop-node" prefix="var_stop-node" override="true"
+			src="data/schemas/var_stop-node.xsd" />
+		<schema name="var_extended-wf" prefix="var_extended-wf" override="true"
+			src="data/schemas/var_extended-wf.xsd" />
+	</extension>
+
+</component>

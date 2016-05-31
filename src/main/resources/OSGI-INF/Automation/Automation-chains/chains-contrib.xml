@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-common-doctypes.chains"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+		point="chains">
+
+		<!-- ***************************************************************** -->
+		<!-- ****** Workflow chains used in Extended WF workflow ****** -->
+		<!-- ***************************************************************** -->
+
+		<chain id="extended-wf-calculateHierarchy">
+			<documentation>Based on region property, calculates "suffix_region"
+				and "suffix_office" for validation purposes
+			</documentation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">index_var</param>
+				<param type="object" name="value">expr:Document["invoicing:region"].lastIndexOf('/')
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">index_var</param>
+				<param type="object" name="value">expr:index_var == -1 ? 2 : index_var
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">length_var</param>
+				<param type="object" name="value">expr:Document["invoicing:region"].length()
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<documentation>From invoicing:region, as a String value of a Chained
+					Vocabulary, take the parent value
+				</documentation>
+				<param type="string" name="name">suffix_region_var</param>
+				<param type="object" name="value">expr:Document["invoicing:region"].valueOf(Document["invoicing:region"],0,index_var)
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<documentation>From invoicing:region, as a String value of a Chained
+					Vocabulary, take the child value
+				</documentation>
+				<param type="string" name="name">suffix_office_var</param>
+				<param type="object" name="value">expr:length_var > 2 ?
+					Document["invoicing:region"].valueOf(Document["invoicing:region"],index_var+1,(length_var-index_var-1))
+					: empty
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">suffix_region</param>
+				<param type="object" name="value">expr:suffix_region_var == empty ?
+					empty : suffix_region_var
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">suffix_office</param>
+				<param type="object" name="value">expr:suffix_office_var == empty ?
+					empty : suffix_office_var
+				</param>
+			</operation>
+		</chain>
+
+		<chain id="extended-wf-calculateValidators">
+			<documentation>Based on several properties, calculates all levels'
+				validators
+			</documentation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">category_var</param>
+				<param type="object" name="value">expr:Document["projectFile:category"]
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">activity_var</param>
+				<param type="object" name="value">expr:Document["invoicing:activity"]
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">firstLevel_var</param>
+				<param type="object" name="value">expr:@{"group:Level35_"+category_var+"_"+WorkflowVariables["suffix_office"]}
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">secondLevel_var</param>
+				<param type="object" name="value">expr:@{"group:Level25_"+WorkflowVariables["suffix_office"]}
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">thirdLevel_var</param>
+				<param type="object" name="value">expr:@{"group:Level20_"+category_var}
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">fourthLevel_var</param>
+				<param type="object" name="value">expr:@{"group:Level15"}
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">fifthLevel_var</param>
+				<param type="object" name="value">expr:@{"group:Level10"}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">firstLevel</param>
+				<param type="object" name="value">expr:firstLevel_var
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">secondLevel</param>
+				<param type="object" name="value">expr:secondLevel_var
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">thirdLevel</param>
+				<param type="object" name="value">expr:thirdLevel_var
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">fourthLevel</param>
+				<param type="object" name="value">expr:fourthLevel_var
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">fifthLevel</param>
+				<param type="object" name="value">expr:fifthLevel_var
+				</param>
+			</operation>
+		</chain>
+		
+		<chain id="extended-wf-CancelAndUnlock">
+			<operation id="Context.FetchDocument" />
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-to_Draft</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-UnlockDocument</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Document.Save" />
+		</chain>
+
+		<chain id="extended-wf-EndAndUnlock">
+			<operation id="Context.FetchDocument" />
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-to_Validated</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-UnlockDocument</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Document.Save" />
+		</chain>
+
+		<chain id="extended-wf-InitializeCommentAndLock">
+			<operation id="Context.FetchDocument" />
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-LockDocument</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">initiatorComment</param>
+				<param type="object" name="value">expr:NodeVariables["comment"]
+				</param>
+			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-StablishFirstAndLastNodes</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-calculateHierarchy</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-to_PendingValidation</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">extended-wf-calculateValidators</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
+		</chain>
+
+		<chain id="extended-wf-LockDocument">
+			<operation id="Context.FetchDocument" />
+			<operation id="Auth.LoginAs">
+				<param type="string" name="name">expr:workflowInitiator</param>
+			</operation>
+			<operation id="Document.Lock" />
+		</chain>
+
+		<chain id="extended-wf-StablishFirstAndLastNodes">
+			<operation id="Context.FetchDocument" />
+			<operation id="Context.SetVar">
+				<param type="string" name="name">threshold_var</param>
+				<param type="object" name="value">expr:Fn.getVocabularyLabel("proj_cfg","LastValidationThreshold")
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">budget_var</param>
+				<param type="object" name="value">expr:Document["invoicing:budget"]
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">Last_needed</param>
+				<param type="object" name="value">expr:budget_var > threshold_var ?
+					true : false
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">firstGroup_var</param>
+				<param type="object" name="value">expr:Fn.getVocabularyLabel("proj_cfg","FirstValidatorGroup")
+				</param>
+			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">notNeededFirstLevelGroup_var</param>
+				<param type="object" name="value">expr:Fn.getPrincipal(workflowInitiator).isMemberOf(firstGroup_var)
+				</param>
+			</operation>
+			<!-- TODO: Next operation should be a simple negation one -->
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">First_needed</param>
+				<param type="object" name="value">expr:notNeededFirstLevelGroup_var ==
+					false ? true : false
+				</param>
+			</operation>
+		</chain>
+
+		<chain id="extended-wf-to_PendingValidation">
+			<operation id="Context.FetchDocument" />
+			<operation id="Auth.LoginAs">
+				<param type="string" name="name">Administrator</param>
+			</operation>
+			<operation id="Document.SetLifeCycle">
+				<param type="string" name="value">to_PendingValidation</param>
+			</operation>
+			<operation id="Auth.Logout" />
+		</chain>
+
+		<chain id="extended-wf-to_Validated">
+			<operation id="Context.FetchDocument" />
+			<operation id="Auth.LoginAs">
+				<param type="string" name="name">Administrator</param>
+			</operation>
+			<operation id="Document.SetLifeCycle">
+				<param type="string" name="value">to_Validated</param>
+			</operation>
+			<operation id="Auth.Logout" />
+		</chain>
+		
+		<chain id="extended-wf-to_Draft">
+			<operation id="Context.FetchDocument" />
+			<operation id="Auth.LoginAs">
+				<param type="string" name="name">Administrator</param>
+			</operation>
+			<operation id="Document.SetLifeCycle">
+				<param type="string" name="value">to_Draft</param>
+			</operation>
+			<operation id="Auth.Logout" />
+		</chain>
+
+		<chain id="extended-wf-UnlockDocument">
+			<operation id="Context.FetchDocument" />
+			<operation id="Auth.LoginAs">
+				<param type="string" name="name">expr:workflowInitiator</param>
+			</operation>
+			<operation id="Document.Unlock" />
+		</chain>
+
+	</extension>
+
+</component>
