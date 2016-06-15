@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-automatic-metadata-calculations.extended-config-vocabularies"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.directory.sql.SQLDirectoryFactory"
+		point="directories">
+
+
+	</extension>
+
+	<extension target="org.nuxeo.ecm.directory.ui.DirectoryUIManager"
+		point="directories">
+
+
+	</extension>
+
+</component>

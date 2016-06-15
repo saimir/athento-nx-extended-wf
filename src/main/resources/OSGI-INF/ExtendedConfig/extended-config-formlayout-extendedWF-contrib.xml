@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component
+	name="org.athento.nuxeo.athento-nx-extended-wf.formlayout-extended-config-extendedWF"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+		point="layouts">
+		<layout name="layout@formlayout-extendedWF">
+			<templates>
+				<template mode="any">/layouts/extendedWF_widget_layout_template.xhtml
+				</template>
+			</templates>
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">2</property>
+						<property name="nxl_colspan_1">2</property>
+					</properties>
+					<widget>inValidationTransition</widget>
+					<widget>validatedTransition</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">3</property>
+					</properties>
+					<widget>approvePreEnabled</widget>
+					<widget>approvePreGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">3</property>
+					</properties>
+					<widget>approveFirstEnabled</widget>
+					<widget>approveFirstGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">1</property>
+						<property name="nxl_colspan_2">1</property>
+						<property name="nxl_colspan_3">1</property>
+						<property name="nxl_colspan_4">1</property>
+					</properties>
+					<widget></widget>
+					<widget>activityFirst</widget>
+					<widget>categoryFirst</widget>
+					<widget>officeFirst</widget>
+					<widget>regionFirst</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">3</property>
+					</properties>
+					<widget>approveSecondEnabled</widget>
+					<widget>approveSecondGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">1</property>
+						<property name="nxl_colspan_2">1</property>
+						<property name="nxl_colspan_3">1</property>
+						<property name="nxl_colspan_4">1</property>
+					</properties>
+					<widget></widget>
+					<widget>activitySecond</widget>
+					<widget>categorySecond</widget>
+					<widget>officeSecond</widget>
+					<widget>regionSecond</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">3</property>
+					</properties>
+					<widget>approveThirdEnabled</widget>
+					<widget>approveThirdGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">1</property>
+						<property name="nxl_colspan_2">1</property>
+						<property name="nxl_colspan_3">1</property>
+						<property name="nxl_colspan_4">1</property>
+					</properties>
+					<widget></widget>
+					<widget>activityThird</widget>
+					<widget>categoryThird</widget>
+					<widget>officeThird</widget>
+					<widget>regionThird</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">3</property>
+					</properties>
+					<widget>approveFourthEnabled</widget>
+					<widget>approveFourthGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">1</property>
+						<property name="nxl_colspan_2">1</property>
+						<property name="nxl_colspan_3">1</property>
+						<property name="nxl_colspan_4">1</property>
+					</properties>
+					<widget></widget>
+					<widget>activityFourth</widget>
+					<widget>categoryFourth</widget>
+					<widget>officeFourth</widget>
+					<widget>regionFourth</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">3</property>
+					</properties>
+					<widget>approveFifthEnabled</widget>
+					<widget>approveFifthGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+						<property name="nxl_colspan_1">1</property>
+						<property name="nxl_colspan_2">1</property>
+						<property name="nxl_colspan_3">1</property>
+						<property name="nxl_colspan_4">1</property>
+					</properties>
+					<widget></widget>
+					<widget>activityFifth</widget>
+					<widget>categoryFifth</widget>
+					<widget>officeFifth</widget>
+					<widget>regionFifth</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">4</property>
+					</properties>
+					<widget>firstValidatorGroup</widget>
+				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">2</property>
+						<property name="nxl_colspan_1">2</property>
+					</properties>
+					<widget>lastValidationThreshold</widget>
+					<widget>lastValidationThresholdField</widget>
+				</row>
+			</rows>
+			<widget name="approvePreEnabled" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approvePreEnabled
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approvePreEnabled</field>
+				</fields>
+			</widget>	
+			<widget name="approveFirstEnabled" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveFirstEnabled
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveFirstEnabled</field>
+				</fields>
+			</widget>
+			<widget name="approveSecondEnabled" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveSecondEnabled
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveSecondEnabled</field>
+				</fields>
+			</widget>
+			<widget name="approveThirdEnabled" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveThirdEnabled
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveThirdEnabled</field>
+				</fields>
+			</widget>
+			<widget name="approveFourthEnabled" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveFourthEnabled
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveFourthEnabled</field>
+				</fields>
+			</widget>
+			<widget name="approveFifthEnabled" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveFifthEnabled
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveFifthEnabled</field>
+				</fields>
+			</widget>
+			<widget name="activityFirst" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.activityFirst
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:activityFirst</field>
+				</fields>
+			</widget>
+			<widget name="categoryFirst" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.categoryFirst
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:categoryFirst</field>
+				</fields>
+			</widget>
+			<widget name="officeFirst" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.officeFirst
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:officeFirst</field>
+				</fields>
+			</widget>
+			<widget name="regionFirst" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.regionFirst
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:regionFirst</field>
+				</fields>
+			</widget>
+			<widget name="activitySecond" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.activitySecond
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:activitySecond</field>
+				</fields>
+			</widget>
+			<widget name="categorySecond" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.categorySecond
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:categorySecond</field>
+				</fields>
+			</widget>
+			<widget name="officeSecond" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.officeSecond
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:officeSecond</field>
+				</fields>
+			</widget>
+			<widget name="regionSecond" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.regionSecond
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:regionSecond</field>
+				</fields>
+			</widget>
+			<widget name="activityThird" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.activityThird
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:activityThird</field>
+				</fields>
+			</widget>
+			<widget name="categoryThird" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.categoryThird
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:categoryThird</field>
+				</fields>
+			</widget>
+			<widget name="officeThird" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.officeThird
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:officeThird</field>
+				</fields>
+			</widget>
+			<widget name="regionThird" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.regionThird
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:regionThird</field>
+				</fields>
+			</widget>
+			<widget name="activityFourth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.activityFourth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:activityFourth</field>
+				</fields>
+			</widget>
+			<widget name="categoryFourth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.categoryFourth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:categoryFourth</field>
+				</fields>
+			</widget>
+			<widget name="officeFourth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.officeFourth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:officeFourth</field>
+				</fields>
+			</widget>
+			<widget name="regionFourth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.regionFourth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:regionFourth</field>
+				</fields>
+			</widget>
+			<widget name="activityFifth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.activityFifth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:activityFifth</field>
+				</fields>
+			</widget>
+			<widget name="categoryFifth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.categoryFifth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:categoryFifth</field>
+				</fields>
+			</widget>
+			<widget name="officeFifth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.officeFifth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:officeFifth</field>
+				</fields>
+			</widget>
+			<widget name="regionFifth" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.regionFifth
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:regionFifth</field>
+				</fields>
+			</widget>
+			<widget name="approvePreGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approvePreGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approvePreGroup</field>
+				</fields>
+			</widget>
+			<widget name="approveFirstGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveFirstGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveFirstGroup</field>
+				</fields>
+			</widget>
+			<widget name="approveSecondGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveSecondGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveSecondGroup</field>
+				</fields>
+			</widget>
+			<widget name="approveThirdGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveThirdGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveThirdGroup</field>
+				</fields>
+			</widget>
+			<widget name="approveFourthGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveFourthGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveFourthGroup</field>
+				</fields>
+			</widget>
+			<widget name="approveFifthGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.approveFifthGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:approveFifthGroup</field>
+				</fields>
+			</widget>
+			<widget name="lastValidationThreshold" type="double">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.lastValidationThreshold
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:lastValidationThreshold</field>
+				</fields>
+			</widget>
+			<widget name="lastValidationThresholdField" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.lastValidationThresholdField
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:lastValidationThresholdField</field>
+				</fields>
+			</widget>
+			<widget name="firstValidatorGroup" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.firstValidatorGroup
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:firstValidatorGroup</field>
+				</fields>
+			</widget>
+			<widget name="inValidationTransition" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.inValidationTransition
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:inValidationTransition</field>
+				</fields>
+			</widget>
+			<widget name="validatedTransition" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.validatedTransition
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:validatedTransition</field>
+				</fields>
+			</widget>
+		</layout>
+
+	</extension>
+</component>
