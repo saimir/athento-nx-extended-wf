@@ -1,19 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component
-	name="org.athento.nuxeo.athento-nx-extended-wf.workflow-layout"
+<component name="org.athento.nuxeo.athento-nx-extended-wf.workflow-layout"
 	version="1.0.0">
 	<require>org.nuxeo.runtime.started</require>
 
 	<extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
 		point="layouts">
-		
+
 		<layout name="fourthTask@taskLayout">
 			<templates>
 				<template mode="any">/layouts/extended_wf_layout_template.xhtml
 				</template>
 			</templates>
-			<rows />
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>manualLastNeeded</widget>
+				</row>
+			</rows>
+			<widget name="manualLastNeeded" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.manualLastNeeded</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>['manualLastNeeded']</field>
+				</fields>
+			</widget>
+		</layout>
+
+		<layout name="preTask@taskLayout">
+			<templates>
+				<template mode="any">/layouts/extended_wf_layout_template.xhtml
+				</template>
+			</templates>
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>projectDoc</widget>
+				</row>
+			</rows>
+			<widget name="projectDoc" type="singleDocumentSuggestion">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.projectNumber</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>['projectDoc']</field>
+				</fields>
+				<properties widgetMode="any">
+					<property name="required">true</property>
+					<property name="minChars">0</property>
+					<property name="hideHelpLabel">true</property>
+					<property name="query">SELECT * FROM ProjectFile WHERE ecm:isCheckedInVersion = 0 AND
+						ecm:currentLifeCycleState != 'deleted' AND dc:title ILIKE '%?%'
+					</property>
+				</properties>
+			</widget>
 		</layout>
 		
 		<layout name="firstTask@taskLayout">
@@ -21,33 +68,113 @@
 				<template mode="any">/layouts/extended_wf_layout_template.xhtml
 				</template>
 			</templates>
-			<rows />
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>projectNumber</widget>
+				</row>
+			</rows>
+			<widget name="projectNumber" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.projectNumber</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>['projectNumber']</field>
+				</fields>
+				<widgetModes>
+					<mode value="edit">view</mode>
+					<mode value="create">view</mode>
+				</widgetModes>
+			</widget>
 		</layout>
-		
+
 		<layout name="secondTask@taskLayout">
 			<templates>
 				<template mode="any">/layouts/extended_wf_layout_template.xhtml
 				</template>
 			</templates>
-			<rows />
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>projectNumber</widget>
+				</row>
+			</rows>
+			<widget name="projectNumber" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.projectNumber</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>['projectNumber']</field>
+				</fields>
+				<widgetModes>
+					<mode value="edit">view</mode>
+					<mode value="create">view</mode>
+				</widgetModes>
+			</widget>
 		</layout>
-		
+
 		<layout name="thirdTask@taskLayout">
 			<templates>
 				<template mode="any">/layouts/extended_wf_layout_template.xhtml
 				</template>
 			</templates>
-			<rows />
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>projectNumber</widget>
+				</row>
+			</rows>
+			<widget name="projectNumber" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.projectNumber</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>['projectNumber']</field>
+				</fields>
+				<widgetModes>
+					<mode value="edit">view</mode>
+					<mode value="create">view</mode>
+				</widgetModes>
+			</widget>
 		</layout>
-		
+
 		<layout name="fifthTask@taskLayout">
 			<templates>
 				<template mode="any">/layouts/extended_wf_layout_template.xhtml
 				</template>
 			</templates>
-			<rows />
+			<rows>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">1</property>
+					</properties>
+					<widget>projectNumber</widget>
+				</row>
+			</rows>
+			<widget name="projectNumber" type="text">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.projectNumber</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>['projectNumber']</field>
+				</fields>
+				<widgetModes>
+					<mode value="edit">view</mode>
+					<mode value="create">view</mode>
+				</widgetModes>
+			</widget>
 		</layout>
-		
+
 	</extension>
 
 </component>

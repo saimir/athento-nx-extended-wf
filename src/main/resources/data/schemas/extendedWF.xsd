@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:nxs="http://www.athento.com/athento-nx-extended-wf/var_extended-wf"
-	targetNamespace="http://www.athento.com/athento-nx-extended-wf/var_extended-wf">
+	xmlns:nxs="http://www.athento.com/ecm/schemas/athento/updateRelated"
+	targetNamespace="http://www.athento.com/ecm/schemas/athento/updateRelated">
 	<!-- helper XSD definitions for list types -->
 	<xs:complexType name="content">
 		<xs:sequence>
@@ -35,26 +35,15 @@
 				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
+	<!-- Extended Config: Extended WF -->
+
 	<xs:element name="firstValidatorGroup" type="xs:string" />
 	<xs:element name="lastValidationThreshold" type="xs:double" />
 	<xs:element name="lastValidationThresholdField" type="xs:string" />
 	
 	<xs:element name="inValidationTransition" type="xs:string" />
-	<xs:element name="validatedTransition" type="xs:string" />	
-	
-	<xs:element name="First_needed" type="xs:boolean" />	
-	<xs:element name="preLevel" type="xs:string" />
-	<xs:element name="firstLevel" type="xs:string" />
-	<xs:element name="fourthLevel" type="xs:string" />
-	<xs:element name="fifthLevel" type="xs:string" />
-	<xs:element name="Last_needed" type="xs:boolean" />
-	<xs:element name="levelsOfValidation" type="xs:string" />
-	<xs:element name="manualLastNeeded" type="xs:boolean" default="false" />
-	<xs:element name="projectDoc" type="xs:string" />
-	<xs:element name="projectNumber" type="xs:string" />
-	<xs:element name="secondLevel" type="xs:string" />
-	<xs:element name="thirdLevel" type="xs:string" />
+	<xs:element name="validatedTransition" type="xs:string" />
 	
 	<xs:element name="region" type="xs:string" />
 	<xs:element name="office" type="xs:string" />
@@ -68,12 +57,12 @@
 	<xs:element name="approveFourthGroup" type="xs:string" default="administators"/>
 	<xs:element name="approveFifthGroup" type="xs:string" default="administators"/>
 	
-	<xs:element name="approvePreEnabled" type="xs:boolean"/>
-	<xs:element name="approveFirstEnabled" type="xs:boolean"/>
-	<xs:element name="approveSecondEnabled" type="xs:boolean"/>
-	<xs:element name="approveThirdEnabled" type="xs:boolean"/>
-	<xs:element name="approveFourthEnabled" type="xs:boolean"/>
-	<xs:element name="approveFifthEnabled" type="xs:boolean"/>
+	<xs:element name="approvePreEnabled" type="xs:boolean" default="true"/>
+	<xs:element name="approveFirstEnabled" type="xs:boolean" default="true"/>
+	<xs:element name="approveSecondEnabled" type="xs:boolean" default="true"/>
+	<xs:element name="approveThirdEnabled" type="xs:boolean" default="true"/>
+	<xs:element name="approveFourthEnabled" type="xs:boolean" default="true"/>
+	<xs:element name="approveFifthEnabled" type="xs:boolean" default="true"/>
 	
 	<xs:element name="activityFirst" type="xs:boolean" />
 	<xs:element name="categoryFirst" type="xs:boolean" />
@@ -99,6 +88,5 @@
 	<xs:element name="categoryFifth" type="xs:boolean" />
 	<xs:element name="officeFifth" type="xs:boolean" />
 	<xs:element name="regionFifth" type="xs:boolean" />
-
 
 </xs:schema>
