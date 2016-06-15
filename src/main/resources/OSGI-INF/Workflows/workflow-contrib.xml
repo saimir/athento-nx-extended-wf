@@ -25,8 +25,9 @@
 			</rule>
 			<rule grant="false">
 				<condition>document.currentLifeCycleState != "Draft"</condition>
-			</rule>
-			<rule grant="false">
+				<condition>#{currentDocument.S_FACTURA.type == 'Emitidas'}</condition>
+				<condition>#{currentDocument.S_FACTURA.type == '02'}</condition>
+				<condition>#{currentDocument.S_FACTURA.type == 'label.factura.issuedinvoices'}</condition>
 				<condition>document.isImmutable() || document.isProxy()</condition>
 			</rule>
 		</filter>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="org.athento.nuxeo.athento-nx-extended-wf.extended-config-chains"
+	version="1.0.0">
+	<require>org.nuxeo.runtime.started</require>
+
+	<extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+		point="chains">
+
+		<!-- ***************************************************************** -->
+		<!-- ****** Config chain used in Extended WF workflow ****** -->
+		<!-- ***************************************************************** -->
+
+		<chain id="extended-wf-extendedConfigLoad">
+			<documentation>
+				Chain that loads Extended Configuration into variables
+			</documentation>
+			<operation id="Auth.LoginAs">
+				<param type="string" name="name">Administrator</param>
+			</operation>
+			<operation id="Document.Fetch">
+				<param type="document" name="value">/ExtendedConfig</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">lastValidationThreshold</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:lastValidationThreshold"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">lastValidationThresholdField</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:lastValidationThresholdField"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">firstValidatorGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:firstValidatorGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">inValidationTransition</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:inValidationTransition"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">validatedTransition</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:validatedTransition"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approvePreGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approvePreGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approvePreEnabled</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approvePreEnabled"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveFirstGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approveFirstGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveSecondGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approveSecondGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveThirdGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approveThirdGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveFourthGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approveFourthGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveFifthGroup</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:approveFifthGroup"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">officeFirst</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:officeFirst"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">regionFirst</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:regionFirst"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">categoryFirst</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:categoryFirst"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">activityFirst</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:activityFirst"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">officeSecond</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:officeSecond"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">regionSecond</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:regionSecond"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">categorySecond</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:categorySecond"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">activitySecond</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:activitySecond"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">officeThird</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:officeThird"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">regionThird</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:regionThird"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">categoryThird</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:categoryThird"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">activityThird</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:activityThird"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">officeFourth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:officeFourth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">regionFourth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:regionFourth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">categoryFourth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:categoryFourth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">activityFourth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:activityFourth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">officeFifth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:officeFifth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">regionFifth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:regionFifth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">categoryFifth</param>
+				<param type="string" name="value">expr:@{Document["extendedWF:categoryFifth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">activityFifth</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:activityFifth"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveFirstEnabled</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:approveFirstEnabled"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveSecondEnabled</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:approveSecondEnabled"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveThirdEnabled</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:approveThirdEnabled"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveFourthEnabled</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:approveFourthEnabled"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approveFifthEnabled</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:approveFifthEnabled"]}
+				</param>
+			</operation>
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">preLevel</param>
+				<param type="object" name="value">expr:@{"group:"+Document["extendedWF:approvePreGroup"]}
+				</param>
+			</operation>
+		</chain>
+
+	</extension>
+
+</component>

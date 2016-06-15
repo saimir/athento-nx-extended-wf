@@ -8,6 +8,12 @@ Bundle-Vendor: Athento
 Nuxeo-Component: OSGI-INF/Automation/Automation-chains/chains-contrib.xml,
  OSGI-INF/Workflows/workflow-doctype-contrib.xml,
  OSGI-INF/Workflows/workflow-layout-contrib.xml,
- OSGI-INF/Workflows/workflow-contrib.xml
+ OSGI-INF/Workflows/workflow-contrib.xml,
+ OSGI-INF/Vocabularies/vocabularies-contrib.xml,
+ OSGI-INF/ExtendedConfig/extended-config-chains-contrib.xml,
+ OSGI-INF/ExtendedConfig/extended-config-doctype-contrib.xml, 
+ OSGI-INF/ExtendedConfig/extended-config-formlayout-extendedWF-contrib.xml,
+ OSGI-INF/ExtendedConfig/extended-config-schemas-contrib.xml, 
+ OSGI-INF/ExtendedConfig/extended-config-vocabularies-contrib.xml
 Created-By: Athento
 
