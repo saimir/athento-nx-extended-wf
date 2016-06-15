@@ -5,10 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.athento.nuxeo</groupId>
     <artifactId>athento-nx-extended-wf</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <name>Athento NX Extended WF</name>
     <description>Athento NX Extended Workflow</description>
-
     <organization>
         <name>Yerbabuena Software</name>
         <url>http://www.yerbabuena.es</url>
