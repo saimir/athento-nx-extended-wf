@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.athento.nuxeo</groupId>
 	<artifactId>athento-nx-extended-wf</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<name>Athento NX Extended WF</name>
 	<description>Athento NX Extended WF</description>
 
