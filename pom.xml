@@ -34,7 +34,7 @@
                 <groupId>org.nuxeo.ecm.distribution</groupId>
                 <artifactId>nuxeo-distribution</artifactId>
                 <scope>import</scope>
-                <version>6.0</version>
+                <version>${nuxeo.platform.version}</version>
                 <type>pom</type>
             </dependency>
         </dependencies>
@@ -166,8 +166,9 @@
             <artifactId>nuxeo-routing-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.nuxeo.ecm.platform</groupId>
+            <groupId>org.nuxeo.ecm.core</groupId>
             <artifactId>nuxeo-platform-login-token</artifactId>
+            <version>6.0-ATH-1.0</version>
         </dependency>
     </dependencies>
 

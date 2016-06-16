@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<component name="org.athento.nuxeo.extended.worflow.notifications-contrib"
+<component name="org.athento.nuxeo.extended.worflow.notification-contrib"
 	version="1.0">
 
 	<require>org.nuxeo.ecm.platform.notification.service.NotificationContrib</require>

@@ -3,6 +3,7 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.automation.core.util.DocumentHelper;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -53,11 +54,15 @@ public class TaskAssignedListener implements EventListener {
                 // Add task property from event document
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
                 if (document != null) {
-                    String taskId = getTaskIdFromDocument(event.getContext(),
-                            event.getContext().getPrincipal().getName());
+                    String taskId = getTaskIdFromDocument(event.getContext());
                     if (taskId != null) {
                         // Set task id
                         properties.put("taskId", taskId);
+                        if (hasContent(document)) {
+                            // Set preview url
+                            properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
+                                    + "/file:content/?token=" + generatePreviewToken(document));
+                        }
                         // Set back to
                         properties.put("backUrl", "/");
                         // Add access token
@@ -68,6 +73,27 @@ public class TaskAssignedListener implements EventListener {
                 }
             }
         }
+    }
+
+    /**
+     * Generate a simple preview token based on dublincore:modified metadata.
+     *
+     * @param doc document
+     * @return token
+     */
+    private String generatePreviewToken(DocumentModel doc) {
+        // Encoding token
+        return Base64.encodeBase64String(String.format("%s#control", doc.getChangeToken()).getBytes());
+    }
+
+    /**
+     * Check for document content.
+     *
+     * @param document
+     * @return
+     */
+    private boolean hasContent(DocumentModel document) {
+        return document.getPropertyValue("file:content") != null;
     }
 
     /**
@@ -82,12 +108,12 @@ public class TaskAssignedListener implements EventListener {
     }
 
     /**
+     * Get task id from source document.
      *
      * @param ctxt
-     * @param username
      * @return
      */
-    private String getTaskIdFromDocument(EventContext ctxt, String username) {
+    private String getTaskIdFromDocument(EventContext ctxt) {
         Task task = (Task) ctxt.getProperties().get("taskInstance");
         return task.getDocument().getId();
     }
