@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: athento-nx-extended-wf;singleton:=true
+Bundle-Version: 1.1.0
+Bundle-Name: Athento NX User Interface
+Require-Bundle: org.nuxeo.runtime
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Athento
+Nuxeo-Component: OSGI-INF/notifications-contrib.xml,
+ OSGI-INF/listener-contrib.xml
+Created-By: Athento

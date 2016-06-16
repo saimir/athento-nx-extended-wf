@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="org.athento.nuxeo.notification.listener-contrib" version="1.0.0">
+
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
+               point="listener">
+
+        <listener name="AthentoTaskAssignedListener" async="false"
+                  postCommit="false" class="org.athento.nuxeo.wf.listener.TaskAssignedListener">
+            <event>workflowTaskAssigned</event>
+        </listener>
+
+    </extension>
+</component>
