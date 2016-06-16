@@ -1,3 +1,0 @@
-<uninstall>
-  <delete file="${env.server.home}/nxserver/plugins/athento-nx-ui-1.2.jar" md5="6fe7082a91e517d26e6cae1cf8f64d16"/>
-</uninstall>
