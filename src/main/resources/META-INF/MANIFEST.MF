@@ -10,5 +10,4 @@ Nuxeo-Component: OSGI-INF/Automation/Automation-chains/chains-contrib.xml,
  OSGI-INF/Workflows/workflow-layout-contrib.xml,
  OSGI-INF/Workflows/workflow-contrib.xml,
  OSGI-INF/notifications-contrib.xml,
- OSGI-INF/listener-contrib.xml
 Created-By: Athento
