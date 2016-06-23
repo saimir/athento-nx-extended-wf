@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:nxs="http://www.athento.com/ecm/schemas/athento/updateRelated"
-	targetNamespace="http://www.athento.com/ecm/schemas/athento/updateRelated">
+	xmlns:nxs="http://www.athento.com/ecm/schemas/athento/extendedWF"
+	targetNamespace="http://www.athento.com/ecm/schemas/athento/extendedWF">
 	<!-- helper XSD definitions for list types -->
 	<xs:complexType name="content">
 		<xs:sequence>
