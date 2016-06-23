@@ -24,6 +24,15 @@
             <organization>Athento</organization>
             <organizationUrl>http://www.athento.com</organizationUrl>
         </developer>
+        
+        <developer>
+            <id>jmj</id>
+            <name>José María Jiménez</name>
+            <email>jmj@athento.com</email>
+            <url>https://github.com/athento</url>
+            <organization>Athento</organization>
+            <organizationUrl>http://www.athento.com</organizationUrl>
+        </developer>
     </developers>
 
     <dependencyManagement>
@@ -211,6 +220,30 @@
             <id>athento-public-snapshots</id>
             <name>Athento Artifact Snapshots</name>
             <url>http://maven2.yerbabuena.es/artifactory/athento-public-snapshot</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>athento-private</id>
+            <name>Athento Private Releases</name>
+            <url>http://maven2.yerbabuena.es/artifactory/athento-private</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>athento-private-snapshots</id>
+            <name>Athento Private Artifact Snapshots</name>
+            <url>http://maven2.yerbabuena.es/artifactory/athento-private-snapshot</url>
             <layout>default</layout>
             <releases>
                 <enabled>false</enabled>
