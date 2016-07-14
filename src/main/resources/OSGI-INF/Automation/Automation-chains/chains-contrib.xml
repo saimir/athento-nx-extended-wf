@@ -105,6 +105,12 @@
 				<param type="serializable" name="value">expr:WorkflowVariables["projectNumber"]
 				</param>
 			</operation>
+			<operation id="Document.SetProperty">
+				<param type="string" name="xpath">projectFile:projectDocid</param>
+				<param type="boolean" name="save">true</param>
+				<param type="serializable" name="value">expr:WorkflowVariables["projectDoc"]
+				</param>
+			</operation>
 		</chain>
 
 		<chain id="extended-wf-calculateValidators">
@@ -592,8 +598,7 @@
 			<operation id="Audit.Log">
 				<param type="string" name="event">LifeCycle: Finished</param>
 				<param type="string" name="category">Document</param>
-				<param type="string" name="comment">expr:@{Document["dc:title"]+"
-					Contabilizada"}
+				<param type="string" name="comment">expr:@{Document["dc:title"]+" Contabilizada"}
 				</param>
 			</operation>
 			<operation id="Seam.AddMessage">
