@@ -12,7 +12,7 @@
 
 		<notification name="Task assigned" channel="email"
 			enabled="true" availableIn="Workspace" autoSubscribed="true"
-			template="workflowTaskAssignedExt"
+			templateExpr="NotificationContext['taskInstance'].getVariable('taskNotificationTemplate')"
 			subject="Task assigned ${docTitle}" label="label.nuxeo.notifications.appReviewStarted">
 			<event name="workflowTaskAssigned" />
 		</notification>
@@ -24,6 +24,13 @@
 		point="templates">
 
 		<template name="workflowTaskAssignedExt" src="templates/workflowTaskAssignedExt.ftl" />
+		<template name="workflowTaskAssignedExtPre" src="templates/workflowTaskAssignedExtPre.ftl" />
+		<template name="workflowTaskAssignedExtFirst" src="templates/workflowTaskAssignedExtFirst.ftl" />
+		<template name="workflowTaskAssignedExtSecond" src="templates/workflowTaskAssignedExtSecond.ftl" />
+		<template name="workflowTaskAssignedExtThird" src="templates/workflowTaskAssignedExtThird.ftl" />
+		<template name="workflowTaskAssignedExtFourth" src="templates/workflowTaskAssignedExtFourth.ftl" />
+		<template name="workflowTaskAssignedExtFifth" src="templates/workflowTaskAssignedExtFifth.ftl" />
+		<template name="workflowTaskAssignedProjectFile" src="templates/workflowTaskAssignedProjectFile.ftl" />
 
 	</extension>
 
