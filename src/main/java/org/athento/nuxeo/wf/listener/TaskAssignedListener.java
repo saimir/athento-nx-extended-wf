@@ -3,19 +3,20 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.task.Task;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.ecm.core.api.IdRef;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,12 +25,16 @@ import java.util.Map;
 public class TaskAssignedListener implements EventListener {
 
     private static final Log LOG = LogFactory
-			.getLog(TaskAssignedListener.class);
+            .getLog(TaskAssignedListener.class);
 
-    /** Nuxeo URL. */
+    /**
+     * Nuxeo URL.
+     */
     private static final String NUXEO_URL = "nuxeo.url";
 
-    /** Token APP. */
+    /**
+     * Token APP.
+     */
     private static final String APP_NAME = "athentoWorkflowExt";
 
     /**
@@ -55,7 +60,7 @@ public class TaskAssignedListener implements EventListener {
                         properties.put("taskId", taskId);
                         String doctype = document.getType();
                         if (doctype.equals("Invoice")) {
-                         // Set node Id to avoid loading unknown properties in preTask
+                            // Set node Id to avoid loading unknown properties in preTask
                             properties.put("nodeId", nodeId);
                             // TODO: Right now we put into properties valid and known metatadata, but this might be
                             // improved so all properties are loaded, and then the template dedices what to use
@@ -77,11 +82,11 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("nodeId", nodeId);
                             // TODO: Right now we put into properties valid and known metatadata, but this might be
                             // improved so all properties are loaded, and then the template dedices what to use
-                            
+
                             properties.put("docDocid", document.getId());
 
                             // Invoicing values
-                            
+
                             properties.put("docBalance", document.getPropertyValue("invoicing:balance"));
                             properties.put("docBonusProvider", document.getPropertyValue("invoicing:bonusProvider"));
                             properties.put("docBudget", document.getPropertyValue("invoicing:budget"));
@@ -91,9 +96,9 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("docOperativeBudget", document.getPropertyValue("invoicing:operativeBudget"));
                             properties.put("docRegion", document.getPropertyValue("invoicing:region"));
                             properties.put("docSociety", document.getPropertyValue("invoicing:society"));
-                            
+
                             // Marketing values
-                            
+
                             properties.put("docCampaignid", document.getPropertyValue("marketing:campaignid"));
                             properties.put("docCampaignDescription", document.getPropertyValue("marketing:campaignDescription"));
                             properties.put("docCampaignName", document.getPropertyValue("marketing:campaignName"));
@@ -101,7 +106,7 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("docQuantity", document.getPropertyValue("marketing:quantity"));
 
                             // ProjectFile values
-                            
+
                             properties.put("docActivity", document.getPropertyValue("projectFile:activity"));
                             properties.put("docCategory", document.getPropertyValue("projectFile:category"));
                             properties.put("docEndPlannedDate", document.getPropertyValue("projectFile:endPlannedDate"));
@@ -112,9 +117,9 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("docSolicitantid", document.getPropertyValue("projectFile:solicitantid"));
                             properties.put("docStartPlannedDate", document.getPropertyValue("projectFile:startPlannedDate"));
                             properties.put("docSummary", document.getPropertyValue("projectFile:summary"));
-                            
-                           }
-                        
+
+                        }
+
                         if (hasContent(document)) {
                             // Set preview url
                             properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
@@ -123,10 +128,15 @@ public class TaskAssignedListener implements EventListener {
                         // Set back to
                         properties.put("backUrl", "/");
                         // Add access token
-                        properties.put("token",
-                                generateAccessTokenAuth(event.getContext().getCoreSession()));
+                        String actors[] = getTaskPrincipals(event.getContext());
+                        HashMap<String, String> tokens = generateAccessTokensAuth(actors);
+                        if (!tokens.isEmpty()) {
+                            // FIXME: Now, it is only for one user by group
+                            properties.put("token",
+                                    tokens.values().iterator().next());
+                        }
+                        properties.put("tokens", tokens);
                     }
-
                 }
             }
         }
@@ -156,12 +166,17 @@ public class TaskAssignedListener implements EventListener {
     /**
      * Generate access token to document based en Nuxeo Token Auth.
      *
-     * @param session
+     * @param principals
      * @return generated access token
      */
-    private String generateAccessTokenAuth(CoreSession session) {
+    private HashMap<String, String> generateAccessTokensAuth(String[] principals) {
+        HashMap<String, String> tokens = new HashMap<>();
         TokenAuthenticationService tokenAuthService = Framework.getService(TokenAuthenticationService.class);
-        return tokenAuthService.acquireToken(session.getPrincipal().getName(), APP_NAME, "default", "default", "rw");
+        int i = 0;
+        for (String principal : principals) {
+            tokens.put(principal, tokenAuthService.acquireToken(principal, APP_NAME, "default", "default", "rw"));
+        }
+        return tokens;
     }
 
     /**
@@ -174,7 +189,33 @@ public class TaskAssignedListener implements EventListener {
         Task task = (Task) ctxt.getProperties().get("taskInstance");
         return task.getDocument().getId();
     }
-    
+
+    /**
+     * Get task principals.
+     *
+     * @param ctxt
+     * @return
+     */
+    private String[] getTaskPrincipals(EventContext ctxt) {
+        List<String> actorResult = new ArrayList<String>();
+        Task task = (Task) ctxt.getProperties().get("taskInstance");
+        UserManager userManager = Framework.getService(UserManager.class);
+        List<String> actors = (List<String>) task.getDocument().getPropertyValue("nt:actors");
+        for (String actor : actors) {
+            if (actor.startsWith("group:")) {
+                NuxeoGroup group = userManager.getGroup(actor.split(":")[1]);
+                for (String user : group.getMemberUsers()) {
+                    actorResult.add(user);
+                }
+            } else if (actor.startsWith("user:")) {
+                actorResult.add(actor.split(":")[1]);
+            } else {
+                actorResult.add(actor);
+            }
+        }
+        return actorResult.toArray(new String[0]);
+    }
+
     /**
      * Get from source document.
      *
