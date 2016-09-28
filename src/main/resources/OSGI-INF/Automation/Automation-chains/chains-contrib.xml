@@ -371,6 +371,12 @@
 				</param>
 				<param type="boolean" name="isolate">false</param>
 			</operation>
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">expr:PREassigneeEvaluation ==
+					true ? 'extended-wf-PREassigneeEvaluation' :
+					'voidChain'</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
 		</chain>
 
 		<chain id="extended-wf-Initialize">
@@ -410,6 +416,26 @@
 			</operation>
 			<operation id="Document.Unlock" />
 			<operation id="Document.Lock" />
+		</chain>
+		
+		<chain id="extended-wf-PREassigneeChange">
+			<operation id="Context.FetchDocument" />
+			<operation id="Context.SetWorkflowVar">
+				<param type="string" name="name">approvePreGroup</param>
+				<param type="string" name="value">expr:@{Document["S_FACTURA:assigneeTo"]}
+				</param>
+			</operation>
+		</chain>
+		
+		<chain id="extended-wf-PREassigneeEvaluation">
+			<operation id="Context.FetchDocument" />
+			<operation id="Context.RunOperation">
+				<param type="string" name="id">expr:Document["S_FACTURA:assignedTo"] ==
+					empty or Document["S_FACTURA:assignedTo"] ==
+					'' ? 'voidChain' :
+					'extended-wf-PREassigneeChange'</param>
+				<param type="boolean" name="isolate">false</param>
+			</operation>
 		</chain>
 
 		<chain id="extended-wf-RelateDocuments">
