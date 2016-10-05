@@ -285,6 +285,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
+                    <finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
                     <archive>
                         <manifestFile>
                             src/main/resources/META-INF/MANIFEST.MF

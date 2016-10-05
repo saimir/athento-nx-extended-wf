@@ -421,8 +421,8 @@
 		<chain id="extended-wf-PREassigneeChange">
 			<operation id="Context.FetchDocument" />
 			<operation id="Context.SetWorkflowVar">
-				<param type="string" name="name">approvePreGroup</param>
-				<param type="string" name="value">expr:@{Document["S_FACTURA:assigneeTo"]}
+				<param type="string" name="name">preLevel</param>
+				<param type="string" name="value">expr:@{Fn.getVocabularyLabel("pivot_users",Document["S_FACTURA:assignedTo"])}
 				</param>
 			</operation>
 		</chain>
@@ -526,7 +526,7 @@
 			</operation>
 			<operation id="Context.SetVar">
 				<param type="string" name="name">budget_var</param>
-				<param type="object" name="value">expr:@{Document[lastValidationThresholdField]}
+				<param type="object" name="value">expr:Document["invoicing:budget"]
 				</param>
 			</operation>
 			<operation id="Context.SetWorkflowVar">
@@ -749,7 +749,30 @@
 			</operation>
 			<operation id="Document.Unlock" />
 		</chain>
+		
+		<chain id="extended-wf-PREassigneeEvaluation-catch">
+			<operation id="Context.FetchDocument" />
+			<operation id="Audit.Log">
+				<param type="string" name="event">Workflow: Assigned To not valid</param>
+				<param type="string" name="category">Document</param>
+				<param type="string" name="comment">expr:@{Document["S_FACTURA:assignedTo"]+" not valid"}
+				</param>
+			</operation>
+		</chain>
 
 	</extension>
+	
+	<extension point="chainException"
+               target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+
+        <documentation>
+            Exception control chains.
+        </documentation>
+
+        <catchChain id="extended-wf-PREassigneeEvaluation_ExceptionChain"
+                    onChainId="extended-wf-PREassigneeEvaluation">
+            <run chainId="extended-wf-PREassigneeEvaluation-catch" priority="0" rollBack="false"/>
+        </catchChain>
+    </extension>
 
 </component>

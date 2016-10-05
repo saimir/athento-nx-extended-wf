@@ -50,6 +50,8 @@
 	<xs:element name="activity" type="xs:string" />
 	<xs:element name="category" type="xs:string" />
 	
+	<xs:element name="PREassigneeEvaluation" type="xs:boolean" default="false"/>
+	
 	<xs:element name="approvePreGroup" type="xs:string" default="administators"/>
 	<xs:element name="approveFirstGroup" type="xs:string" default="administators"/>
 	<xs:element name="approveSecondGroup" type="xs:string" default="administators"/>
@@ -88,5 +90,5 @@
 	<xs:element name="categoryFifth" type="xs:boolean" />
 	<xs:element name="officeFifth" type="xs:boolean" />
 	<xs:element name="regionFifth" type="xs:boolean" />
-
+	
 </xs:schema>

@@ -31,6 +31,12 @@
 				</row>
 				<row>
 					<properties mode="any">
+						<property name="nxl_colspan_0">4</property>
+					</properties>
+					<widget>PREassigneeEvaluation</widget>
+				</row>
+				<row>
+					<properties mode="any">
 						<property name="nxl_colspan_0">1</property>
 						<property name="nxl_colspan_1">3</property>
 					</properties>
@@ -212,6 +218,16 @@
 				<translated>true</translated>
 				<fields>
 					<field>extendedWF:approveFifthEnabled</field>
+				</fields>
+			</widget>
+			<widget name="PREassigneeEvaluation" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.PREassigneeEvaluation
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:PREassigneeEvaluation</field>
 				</fields>
 			</widget>
 			<widget name="activityFirst" type="checkbox">
