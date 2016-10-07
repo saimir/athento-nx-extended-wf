@@ -21,6 +21,12 @@
 			<operation id="Document.Fetch">
 				<param type="document" name="value">/ExtendedConfig</param>
 			</operation>
+			
+			<operation id="Context.SetVar">
+				<param type="string" name="name">PREassigneeEvaluation</param>
+				<param type="object" name="value">expr:@{Document["extendedWF:PREassigneeEvaluation"]}
+				</param>
+			</operation>
 			<operation id="Context.SetWorkflowVar">
 				<param type="string" name="name">lastValidationThreshold</param>
 				<param type="string" name="value">expr:@{Document["extendedWF:lastValidationThreshold"]}

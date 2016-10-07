@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<component name="org.athento.nuxeo.athento-nx-extended-wf.workflow-notification-contrib"
+	version="1.0">
+
+	<require>org.nuxeo.ecm.platform.notification.service.NotificationContrib</require>
+	<require>org.nuxeo.ecm.platform.comment.workflow.notification.service.NotificationContrib</require>
+
+	<extension
+		target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService"
+		point="notifications">
+
+		<notification name="Task assigned" channel="email"
+			enabled="true" availableIn="Workspace" autoSubscribed="true"
+			templateExpr="NotificationContext['taskInstance'].getVariable('taskNotificationTemplate')"
+			subject="Task assigned ${docTitle}" label="label.nuxeo.notifications.appReviewStarted">
+			<event name="workflowTaskAssigned" />
+		</notification>
+
+	</extension>
+
+	<extension
+		target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService"
+		point="templates">
+
+		<template name="workflowTaskAssignedExt" src="templates/workflowTaskAssignedExt.ftl" />
+		<template name="workflowTaskAssignedExtPre" src="templates/workflowTaskAssignedExtPre.ftl" />
+		<template name="workflowTaskAssignedExtFirst" src="templates/workflowTaskAssignedExtFirst.ftl" />
+		<template name="workflowTaskAssignedExtSecond" src="templates/workflowTaskAssignedExtSecond.ftl" />
+		<template name="workflowTaskAssignedExtThird" src="templates/workflowTaskAssignedExtThird.ftl" />
+		<template name="workflowTaskAssignedExtFourth" src="templates/workflowTaskAssignedExtFourth.ftl" />
+		<template name="workflowTaskAssignedExtFifth" src="templates/workflowTaskAssignedExtFifth.ftl" />
+		<template name="workflowTaskAssignedProjectFile" src="templates/workflowTaskAssignedProjectFile.ftl" />
+
+	</extension>
+
+
+</component>
