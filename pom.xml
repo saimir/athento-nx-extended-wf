@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.athento.nuxeo</groupId>
-    <artifactId>athento-nx-extended-wf</artifactId>
-    <version>1.2-SNAPSHOT</version>
-    <name>Athento NX Extended WF</name>
-    <description>Athento NX Extended Workflow</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.athento.nuxeo</groupId>
+	<artifactId>athento-nx-extended-wf</artifactId>
+	<version>1.2-SNAPSHOT</version>
+	<name>Athento NX Extended WF</name>
+	<description>Athento NX Extended Workflow</description>
 
-    <inceptionYear>2016</inceptionYear>
+	<inceptionYear>2016</inceptionYear>
 
-    <developers>
-        <developer>
-            <id>vs</id>
-            <name>Victor Sanchez</name>
-            <email>vs@athento.com</email>
-            <url>https://github.com/victorsanchez</url>
-            <organization>Athento</organization>
-            <organizationUrl>http://www.athento.com</organizationUrl>
-        </developer>
-        
-        <developer>
-            <id>jmj</id>
-            <name>José María Jiménez</name>
-            <email>jmj@athento.com</email>
-            <url>https://github.com/athento</url>
-            <organization>Athento</organization>
-            <organizationUrl>http://www.athento.com</organizationUrl>
-        </developer>
-    </developers>
-<dependencyManagement>
+	<developers>
+		<developer>
+			<id>vs</id>
+			<name>Victor Sanchez</name>
+			<email>vs@athento.com</email>
+			<url>https://github.com/victorsanchez</url>
+			<organization>Athento</organization>
+			<organizationUrl>http://www.athento.com</organizationUrl>
+		</developer>
+
+		<developer>
+			<id>jmj</id>
+			<name>José María Jiménez</name>
+			<email>jmj@athento.com</email>
+			<url>https://github.com/athento</url>
+			<organization>Athento</organization>
+			<organizationUrl>http://www.athento.com</organizationUrl>
+		</developer>
+	</developers>
+	<dependencyManagement>
 
 		<dependencies>
 			<dependency>
@@ -45,41 +44,136 @@
 	</dependencyManagement>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.nuxeo.common</groupId>
 			<artifactId>nuxeo-common</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.nuxeo.runtime</groupId>
 			<artifactId>nuxeo-runtime</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core-api</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core-query</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.nuxeo.ecm.core</groupId>
 			<artifactId>nuxeo-core-schema</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+			<groupId>org.nuxeo.ecm.automation</groupId>
+			<artifactId>nuxeo-automation-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.automation</groupId>
+			<artifactId>nuxeo-automation-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.runtime</groupId>
+			<artifactId>nuxeo-runtime-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.automation</groupId>
+			<artifactId>nuxeo-automation-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-contentview-jsf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-webapp-base</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-convert</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.core</groupId>
+			<artifactId>nuxeo-core-convert-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-mimetype-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-url-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-htmlsanitizer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-preview</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-notification-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-task-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.routing</groupId>
+			<artifactId>nuxeo-routing-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.nuxeo.ecm.core</groupId>
+			<artifactId>nuxeo-platform-login-token</artifactId>
+			<version>6.0-ATH-1.0</version>
+		</dependency>
+
 
 	</dependencies>
 
