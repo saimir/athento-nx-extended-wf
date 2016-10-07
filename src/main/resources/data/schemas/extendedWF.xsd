@@ -49,7 +49,6 @@
 	<xs:element name="office" type="xs:string" />
 	<xs:element name="activity" type="xs:string" />
 	<xs:element name="category" type="xs:string" />
-	
 	<xs:element name="PREassigneeEvaluation" type="xs:boolean" default="false"/>
 	
 	<xs:element name="approvePreGroup" type="xs:string" default="administators"/>

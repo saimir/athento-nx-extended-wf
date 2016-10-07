@@ -8,10 +8,6 @@
     <version>1.2-SNAPSHOT</version>
     <name>Athento NX Extended WF</name>
     <description>Athento NX Extended Workflow</description>
-    <organization>
-        <name>Yerbabuena Software</name>
-        <url>http://www.yerbabuena.es</url>
-    </organization>
 
     <inceptionYear>2016</inceptionYear>
 
