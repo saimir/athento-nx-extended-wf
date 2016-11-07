@@ -59,6 +59,9 @@ public class SendEmailAssignedTaskOperation {
     @Param(name = "subject", required = false)
     protected String subject;
 
+    @Param(name = "html", required = false)
+    protected boolean html = false;
+
     /**
      * Run operation for a document.
      *
@@ -98,7 +101,7 @@ public class SendEmailAssignedTaskOperation {
             params.put("from", from);
             params.put("message", template);
             params.put("subject", subject);
-            params.put("HTML", false);
+            params.put("HTML", html);
 
             if (!usernameList.isEmpty()) {
                 LOG.info("Sending task notification to users: " + usernameList);
