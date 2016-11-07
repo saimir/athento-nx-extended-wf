@@ -14,10 +14,7 @@ import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
 import org.nuxeo.runtime.api.Framework;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Hook for task assigned listener.
@@ -172,8 +169,8 @@ public class TaskAssignedListener implements EventListener {
     private HashMap<String, String> generateAccessTokensAuth(String[] principals) {
         HashMap<String, String> tokens = new HashMap<>();
         TokenAuthenticationService tokenAuthService = Framework.getService(TokenAuthenticationService.class);
-        int i = 0;
         for (String principal : principals) {
+            LOG.info("Generating access token for " + principal);
             tokens.put(principal, tokenAuthService.acquireToken(principal, APP_NAME, "default", "default", "rw"));
         }
         return tokens;
@@ -200,7 +197,7 @@ public class TaskAssignedListener implements EventListener {
         List<String> actorResult = new ArrayList<String>();
         Task task = (Task) ctxt.getProperties().get("taskInstance");
         UserManager userManager = Framework.getService(UserManager.class);
-        List<String> actors = (List<String>) task.getDocument().getPropertyValue("nt:actors");
+        List<String> actors = task.getActors();
         for (String actor : actors) {
             if (actor.startsWith("group:")) {
                 NuxeoGroup group = userManager.getGroup(actor.split(":")[1]);

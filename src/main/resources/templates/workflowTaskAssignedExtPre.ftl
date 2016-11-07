@@ -17,7 +17,7 @@
                     <tr>
                       <td style="background-color:#fff;padding:8px 20px;"><br/>
                         <p style="margin:0;font-size:14px;">
-                        En el documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${htmlEscape(docTitle)}</a> tiene <strong>una tarea asignada</strong> a usted o a un grupo al que pertenece.
+                        En el documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${Fn.htmlEscape(docTitle)}</a> tiene <strong>una tarea asignada</strong> a usted o a un grupo al que pertenece.
                         </p><br/>
                         <p style="margin:0;font-size:14px;">
                         Concepto: <strong>${docSubject}</strong> - Cantidad: <strong>${docTotalAmount}</strong>
@@ -26,7 +26,7 @@
                         Por favor acceda al documento para completar los campos obligatorios.
                         </p><br/>
                         <p style="margin:0;font-size:13px;">
-                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver la tarea en ${htmlEscape(docTitle)}</a>
+                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver la tarea en ${Fn.htmlEscape(docTitle)}</a>
                         </p><br/>
                         <#if previewUrl?has_content>
                         <p style="margin:0;font-size:13px;">
@@ -34,12 +34,6 @@
                         </p><br/>
                         </#if>
                      </td>
-                    </tr>
-                    <tr>
-                      <td style="background-color:#f7f7f7;border-top:1px dashed #e9ecef;text-align:center;padding:8px 20px;">
-                        <div style="font-size:12px;color:#bbb;">
-                        You received this notification because you subscribed to ${notification.name?lower_case} on this document or on one of its parents.</div>
-                      </td>
                     </tr>
                   </tbody>
                 </table>

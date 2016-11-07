@@ -17,7 +17,7 @@
                     <tr>
                       <td style="background-color:#fff;padding:8px 20px;"><br/>
                         <p style="margin:0;font-size:14px;">
-                        El proyecto <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${htmlEscape(docTitle)}</a> necesita aprobación y <strong>ha sido asignado a usted</strong> o a un grupo al que pertenece.
+                        El proyecto <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${Fn.htmlEscape(docTitle)}</a> necesita aprobación y <strong>ha sido asignado a usted</strong> o a un grupo al que pertenece.
                         </p><br/>
                         <p style="margin:0;font-size:14px;">
                         Proyecto: <strong>${docProjectid}</strong>
@@ -60,7 +60,7 @@
                         <p style="margin:0;font-size:14px;">
                         </p><br/>
                         <p style="margin:0;font-size:13px;">
-                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver tarea en ${htmlEscape(docTitle)}</a>
+                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver tarea en ${Fn.htmlEscape(docTitle)}</a>
                         </p><br/>
                         <#if previewUrl?has_content>
                         <p style="margin:0;font-size:13px;">
@@ -72,12 +72,6 @@
                             <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${host}/api/athento/v1/workflow/tasks/${taskId}/transition/reject?token=${token}">&#187; Rechazar</a>
                         </p><br/>
                      </td>
-                    </tr>
-                    <tr>
-                      <td style="background-color:#f7f7f7;border-top:1px dashed #e9ecef;text-align:center;padding:8px 20px;">
-                        <div style="font-size:12px;color:#bbb;">
-                        You received this notification because you subscribed to ${notification.name?lower_case} on this document or on one of its parents.</div>
-                      </td>
                     </tr>
                   </tbody>
                 </table>

@@ -17,7 +17,7 @@
                     <tr>
                       <td style="background-color:#fff;padding:8px 20px;"><br/>
                         <p style="margin:0;font-size:14px;">
-                        En el documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${htmlEscape(docTitle)}</a> tiene <strong>una tarea asignada</strong> a usted o a un grupo al que pertenece.
+                        En el documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${Fn.htmlEscape(docTitle)}</a> tiene <strong>una tarea asignada</strong> a usted o a un grupo al que pertenece.
                         </p><br/>
                         <p style="margin:0;font-size:14px;">
                         Concepto: <strong>${docSubject}</strong> - Cantidad: <strong>${docTotalAmount}</strong>
@@ -26,7 +26,7 @@
                         Proyecto: <strong>${docProjectid}</strong> - Presupuesto del proyecto: <strong>${projectBudget}</strong>, Disponible: <strong>${projectRemainingBudget}</strong>
                         </p><br/>
                         <p style="margin:0;font-size:13px;">
-                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver la tarea en ${htmlEscape(docTitle)}</a>
+                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver la tarea en ${Fn.htmlEscape(docTitle)}</a>
                         </p><br/>
                         <#if previewUrl?has_content>
                         <p style="margin:0;font-size:13px;">

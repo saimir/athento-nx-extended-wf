@@ -1,31 +1,30 @@
 package org.athento.nuxeo.wf.operation;
 
-import org.apache.batik.util.Platform;
+import org.apache.bcel.verifier.structurals.Frame;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
-import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
-import org.nuxeo.ecm.automation.core.collectors.BlobCollector;
 import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
-
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.automation.features.PlatformFunctions;
-import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.platform.routing.api.DocumentRoute;
-import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
-import org.nuxeo.ecm.platform.routing.api.DocumentRoutingService;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.event.EventService;
+import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskService;
+import org.nuxeo.ecm.platform.task.core.service.TaskEventNotificationHelper;
 import org.nuxeo.runtime.api.Framework;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class SendEmailAssignedTaskOperation {
     @Param(name = "from", required = false)
     protected String from = "noreply@athento.com";
 
-    @Param(name = "template", required = false)
+    @Param(name = "template", required = false, values = { "template:routingTaskAssigned", "template:workflowTaskAssignedProjectFile" })
     protected String template = "template:routingTaskAssigned";
 
     @Param(name = "subject", required = false)
@@ -72,21 +71,46 @@ public class SendEmailAssignedTaskOperation {
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws Exception {
 
-        // Get document task
-        DocumentModel sourceDoc = session.getDocument(new IdRef((String) doc.getPropertyValue("nt:targetDocumentId")));
+        TaskService taskService = Framework.getService(TaskService.class);
+        List<Task> documentTasks = taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session);
 
-        if (sourceDoc == null) {
-            throw new Exception("No source document referented by task " + doc.getId());
+        for (Task task : documentTasks) {
+            notifyTask(task, doc);
         }
+
+        return doc;
+    }
+
+    /**
+     * Notifiy task.
+     *
+     * @param task
+     * @param doc
+     * @throws Exception
+     */
+    private void notifyTask(Task task, DocumentModel doc) throws Exception {
+        HashMap<String, Serializable> params = new HashMap<>();
+        for (Map.Entry<String, Object> entry : ctx.entrySet()) {
+            if (entry.getValue() instanceof Serializable) {
+                params.put(entry.getKey(), (Serializable) entry.getValue());
+            }
+        }
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Sending notification for document:" + doc.getId() + " and task: " + task.getDocument().getId());
+        }
+        TaskEventNotificationHelper.notifyEvent(session, doc, (NuxeoPrincipal) session.getPrincipal(),
+                task, "workflowTaskAssigned", params, "Remember task assigned.", "");
+
+        // Add event context to context
+        ctx.putAll(params);
 
         // Check subject
         if (subject == null) {
-            subject = sourceDoc.getTitle();
+            subject = doc.getTitle();
         }
 
-        List<String> actors = (List<String>) doc.getPropertyValue("nt:actors");
+        List<String> actors = task.getActors();
         if (actors != null) {
-            PlatformFunctions fn = new PlatformFunctions();
             StringList usernameList = new StringList();
             StringList groupList = new StringList();
             for (String act : actors) {
@@ -97,29 +121,27 @@ public class SendEmailAssignedTaskOperation {
                 }
             }
             // Prepare notification
-            Map<String, Object> params = new HashMap<>();
-            params.put("from", from);
-            params.put("message", template);
-            params.put("subject", subject);
-            params.put("HTML", html);
+            Map<String, Object> mailParams = new HashMap<>();
+            mailParams.put("from", from);
+            mailParams.put("message", template);
+            mailParams.put("subject", subject);
+            mailParams.put("HTML", html);
 
             if (!usernameList.isEmpty()) {
                 LOG.info("Sending task notification to users: " + usernameList);
-                params.put("to", new PlatformFunctions().getEmails(usernameList));
+                mailParams.put("to", new PlatformFunctions().getEmails(usernameList));
                 // Run send email operation to username list
-                runOperation("Notification.SendMail", doc, params, session);
+                runOperation("Notification.SendMail", doc, mailParams, session, ctx);
             } else if (!groupList.isEmpty()) {
                 for (String group : groupList) {
                     LOG.info("Sending task notification to group: " + group);
-                    params.put("to", new PlatformFunctions().getEmailsFromGroup(group));
+                    mailParams.put("to", new PlatformFunctions().getEmailsFromGroup(group));
                     // Run send email operation to each group
-                    runOperation("Notification.SendMail", doc, params, session);
+                    runOperation("Notification.SendMail", doc, mailParams, session, ctx);
                 }
             }
 
         }
-
-        return doc;
     }
 
     /**
@@ -133,12 +155,14 @@ public class SendEmailAssignedTaskOperation {
      * @throws Exception
      */
     private static Object runOperation(String operationId, Object input,
-                                      Map<String, Object> params, CoreSession session)
+                                      Map<String, Object> params, CoreSession session, OperationContext context)
             throws Exception {
         AutomationService automationManager = Framework
                 .getLocalService(AutomationService.class);
         OperationContext ctx = new OperationContext(session);
         ctx.setInput(input);
+        ctx.putAll(context);
+        LOG.info("ctxt " + ctx.getVars());
         return automationManager.run(ctx, operationId, params);
     }
 }
