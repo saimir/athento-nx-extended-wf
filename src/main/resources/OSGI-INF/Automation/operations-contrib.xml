@@ -4,6 +4,7 @@
 
     <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent" point="operations">
         <operation class="org.athento.nuxeo.wf.operation.SendEmailAssignedTaskOperation" />
+        <operation class="org.athento.nuxeo.wf.operation.ResumeNodeOperation" replace="true" />
     </extension>
 
 </component>
