@@ -15,8 +15,7 @@ import org.nuxeo.ecm.platform.routing.api.DocumentRoutingService;
 import java.util.HashMap;
 import java.util.Map;
 
-@Operation(id = ResumeNodeOperation.ID, category = "Athento", label = "Resume workflow extended", requires = Constants.WORKFLOW_CONTEXT, description = "Resumes a route instance on a given node. "
-        + "When a parameter is not specified, it will be fetched from the current context if the operation is executed in the context of a running workflow (it applies to the current workflow and to the current node).")
+@Operation(id = ResumeNodeOperation.ID, category = "Athento", label = "Resume workflow extended", requires = Constants.WORKFLOW_CONTEXT, description = "Resumes a route instance with force option.")
 public class ResumeNodeOperation {
     public static final String ID = "Workflow.ResumeNodeOperation";
 
