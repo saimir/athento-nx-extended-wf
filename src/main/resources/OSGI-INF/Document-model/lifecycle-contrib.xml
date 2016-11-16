@@ -12,11 +12,23 @@
 
         <lifecycle name="task" defaultInitial="opened">
             <transitions>
+                <transition name="end" destinationState="ended">
+                    <description>End the task</description>
+                </transition>
+                <transition name="cancel" destinationState="cancelled">
+                    <description>Cancel the task</description>
+                </transition>
                 <transition name="reOpen" destinationState="opened">
                     <description>Reopen the task</description>
                 </transition>
             </transitions>
             <states>
+                <state name="opened" description="Task is open.">
+                    <transitions>
+                        <transition>end</transition>
+                        <transition>cancel</transition>
+                    </transitions>
+                </state>
                 <state name="ended" description="task has been ended">
                     <transitions>
                         <transition>reOpen</transition>
