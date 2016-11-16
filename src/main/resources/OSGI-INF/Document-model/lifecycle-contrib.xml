@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<component name="org.athento.nuxeo.automation.extended-wf.lifecycle-contrib">
+
+    <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
+               point="lifecycle">
+
+        <documentation>
+            Add transition to re-open a task from
+            ended or cancelled state.
+        </documentation>
+
+        <lifecycle name="task" defaultInitial="opened">
+            <transitions>
+                <transition name="reOpen" destinationState="opened">
+                    <description>Reopen the task</description>
+                </transition>
+            </transitions>
+            <states>
+                <state name="ended" description="task has been ended">
+                    <transitions>
+                        <transition>reOpen</transition>
+                    </transitions>
+                </state>
+                <state name="cancelled" description="Task is cancelled">
+                    <transitions>
+                        <transition>reOpen</transition>
+                    </transitions>
+                </state>
+            </states>
+        </lifecycle>
+    </extension>
+
+</component>
