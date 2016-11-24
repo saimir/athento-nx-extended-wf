@@ -68,7 +68,7 @@ public class TaskAssignedListener implements EventListener {
                                 String initiator = (String) taskDoc.getPropertyValue("nt:initiator");
                                 Map<String, Object> params = new HashMap<>();
                                 params.put("toUser", initiator);
-                                params.put("subject", "[Nuxeo]Task assigned to " + taskDoc.)
+                                params.put("subject", "[Nuxeo]Task assigned " + document.getName());
                                 try {
                                     WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document.getId(), params, session);
                                 } catch (Exception e) {
