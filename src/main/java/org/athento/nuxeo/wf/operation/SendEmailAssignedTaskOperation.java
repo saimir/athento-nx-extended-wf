@@ -61,6 +61,10 @@ public class SendEmailAssignedTaskOperation {
     @Param(name = "html", required = false)
     protected boolean html = false;
 
+    @Param(name = "toUser", required = false,
+            description = "If this value is not empty, the task assigned notification will be send to the this username.")
+    protected String toUser;
+
     /**
      * Run operation for a document.
      *
@@ -98,8 +102,8 @@ public class SendEmailAssignedTaskOperation {
         if (LOG.isInfoEnabled()) {
             LOG.info("Sending notification for document:" + doc.getId() + " and task: " + task.getDocument().getId());
         }
-        TaskEventNotificationHelper.notifyEvent(session, doc, (NuxeoPrincipal) session.getPrincipal(),
-                task, "workflowTaskAssigned", params, "Remember task assigned.", "");
+        //TaskEventNotificationHelper.notifyEvent(session, doc, (NuxeoPrincipal) session.getPrincipal(),
+          //      task, "workflowTaskAssigned", params, "Remember task assigned.", "");
 
         // Add event context to context
         ctx.putAll(params);
@@ -127,20 +131,25 @@ public class SendEmailAssignedTaskOperation {
             mailParams.put("subject", subject);
             mailParams.put("HTML", html);
 
-            if (!usernameList.isEmpty()) {
-                LOG.info("Sending task notification to users: " + usernameList);
-                mailParams.put("to", new PlatformFunctions().getEmails(usernameList));
-                // Run send email operation to username list
+            if (toUser != null) {
+                mailParams.put("to", new PlatformFunctions().getEmail(toUser));
+                // Run send email operation to the param "to" email
                 runOperation("Notification.SendMail", doc, mailParams, session, ctx);
-            } else if (!groupList.isEmpty()) {
-                for (String group : groupList) {
-                    LOG.info("Sending task notification to group: " + group);
-                    mailParams.put("to", new PlatformFunctions().getEmailsFromGroup(group));
-                    // Run send email operation to each group
+            } else {
+                if (!usernameList.isEmpty()) {
+                    LOG.info("Sending task notification to users: " + usernameList);
+                    mailParams.put("to", new PlatformFunctions().getEmails(usernameList));
+                    // Run send email operation to username list
                     runOperation("Notification.SendMail", doc, mailParams, session, ctx);
+                } else if (!groupList.isEmpty()) {
+                    for (String group : groupList) {
+                        LOG.info("Sending task notification to group: " + group);
+                        mailParams.put("to", new PlatformFunctions().getEmailsFromGroup(group));
+                        // Run send email operation to each group
+                        runOperation("Notification.SendMail", doc, mailParams, session, ctx);
+                    }
                 }
             }
-
         }
     }
 
@@ -162,7 +171,6 @@ public class SendEmailAssignedTaskOperation {
         OperationContext ctx = new OperationContext(session);
         ctx.setInput(input);
         ctx.putAll(context);
-        LOG.info("ctxt " + ctx.getVars());
         return automationManager.run(ctx, operationId, params);
     }
 }

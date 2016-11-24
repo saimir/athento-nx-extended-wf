@@ -89,5 +89,7 @@
 	<xs:element name="categoryFifth" type="xs:boolean" />
 	<xs:element name="officeFifth" type="xs:boolean" />
 	<xs:element name="regionFifth" type="xs:boolean" />
+
+	<xs:element name="autoSubscribeCreator" type="xs:boolean" default="false" />
 	
 </xs:schema>

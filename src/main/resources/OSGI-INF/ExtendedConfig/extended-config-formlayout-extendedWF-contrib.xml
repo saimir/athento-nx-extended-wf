@@ -159,6 +159,12 @@
 					<widget>lastValidationThreshold</widget>
 					<widget>lastValidationThresholdField</widget>
 				</row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">4</property>
+					</properties>
+					<widget>autoSubscribeCreator</widget>
+				</row>
 			</rows>
 			<widget name="approvePreEnabled" type="checkbox">
 				<labels>
@@ -538,6 +544,16 @@
 				<translated>true</translated>
 				<fields>
 					<field>extendedWF:validatedTransition</field>
+				</fields>
+			</widget>
+			<widget name="autoSubscribeCreator" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.autoSubscribeCreator
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:autoSubscribeCreator</field>
 				</fields>
 			</widget>
 		</layout>
