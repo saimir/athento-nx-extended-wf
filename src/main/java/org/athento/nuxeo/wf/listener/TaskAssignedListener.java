@@ -3,12 +3,16 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.ecm.platform.ec.notification.NotificationConstants;
+import org.nuxeo.ecm.platform.notification.api.NotificationManager;
 import org.nuxeo.ecm.platform.task.Task;
+import org.nuxeo.ecm.platform.task.core.service.TaskEventNotificationHelper;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
 import org.nuxeo.runtime.api.Framework;
@@ -55,6 +59,24 @@ public class TaskAssignedListener implements EventListener {
                     if (taskId != null) {
                         // Set task id
                         properties.put("taskId", taskId);
+                        boolean autoSubscribe = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                                "extendedWF:autoSubscribeCreator", Boolean.class);
+                        if (autoSubscribe) {
+                            CoreSession session = event.getContext().getCoreSession();
+                            DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                            if (taskDoc != null) {
+                                String initiator = (String) taskDoc.getPropertyValue("nt:initiator");
+                                Map<String, Object> params = new HashMap<>();
+                                params.put("toUser", initiator);
+                                params.put("subject", "[Nuxeo]Task assigned to " + taskDoc.)
+                                try {
+                                    WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document.getId(), params, session);
+                                } catch (Exception e) {
+                                    LOG.error("Error sending notification to initiator", e);
+                                    throw new ClientException(e);
+                                }
+                            }
+                        }
                         String doctype = document.getType();
                         if (doctype.equals("Invoice")) {
                             // Set node Id to avoid loading unknown properties in preTask
