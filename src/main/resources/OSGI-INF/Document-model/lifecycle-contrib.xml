@@ -1,46 +1,42 @@
 <?xml version="1.0"?>
 
 <component name="org.athento.nuxeo.automation.extended-wf.lifecycle-contrib">
-
-    <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
-               point="lifecycle">
-
-        <documentation>
-            Add transition to re-open a task from
-            ended or cancelled state.
-        </documentation>
-
-        <lifecycle name="task" defaultInitial="opened">
-            <transitions>
-                <transition name="end" destinationState="ended">
-                    <description>End the task</description>
-                </transition>
-                <transition name="cancel" destinationState="cancelled">
-                    <description>Cancel the task</description>
-                </transition>
-                <transition name="reOpen" destinationState="opened">
-                    <description>Reopen the task</description>
-                </transition>
-            </transitions>
-            <states>
-                <state name="opened" description="Task is open.">
-                    <transitions>
-                        <transition>end</transition>
-                        <transition>cancel</transition>
-                    </transitions>
-                </state>
-                <state name="ended" description="task has been ended">
-                    <transitions>
-                        <transition>reOpen</transition>
-                    </transitions>
-                </state>
-                <state name="cancelled" description="Task is cancelled">
-                    <transitions>
-                        <transition>reOpen</transition>
-                    </transitions>
-                </state>
-            </states>
-        </lifecycle>
-    </extension>
-
+<extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
+           point="lifecycle">
+    <documentation>
+        Add transition to re-open a task from
+        ended or cancelled state.
+    </documentation>
+    <lifecycle name="task" defaultInitial="opened">
+        <transitions>
+            <transition name="end" destinationState="ended">
+                <description>End the task</description>
+            </transition>
+            <transition name="cancel" destinationState="cancelled">
+                <description>Cancel the task</description>
+            </transition>
+            <transition name="reOpen" destinationState="opened">
+                <description>Reopen the task</description>
+            </transition>
+        </transitions>
+        <states>
+            <state name="opened" description="Task is open.">
+                <transitions>
+                    <transition>end</transition>
+                    <transition>cancel</transition>
+                </transitions>
+            </state>
+            <state name="ended" description="task has been ended">
+                <transitions>
+                    <transition>reOpen</transition>
+                </transitions>
+            </state>
+            <state name="cancelled" description="Task is cancelled">
+                <transitions>
+                    <transition>reOpen</transition>
+                </transitions>
+            </state>
+        </states>
+    </lifecycle>
+</extension>
 </component>
