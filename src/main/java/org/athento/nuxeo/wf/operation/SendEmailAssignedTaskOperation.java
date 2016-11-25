@@ -1,6 +1,5 @@
 package org.athento.nuxeo.wf.operation;
 
-import org.apache.bcel.verifier.structurals.Frame;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.AutomationService;
@@ -14,17 +13,12 @@ import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.automation.features.PlatformFunctions;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
-import org.nuxeo.ecm.core.event.EventService;
-import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskService;
-import org.nuxeo.ecm.platform.task.core.service.TaskEventNotificationHelper;
 import org.nuxeo.runtime.api.Framework;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,8 +93,8 @@ public class SendEmailAssignedTaskOperation {
                 params.put(entry.getKey(), (Serializable) entry.getValue());
             }
         }
-        if (LOG.isInfoEnabled()) {
-            LOG.info("Sending notification for document:" + doc.getId() + " and task: " + task.getDocument().getId());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Sending notification for document:" + doc.getId() + " and task: " + task.getDocument().getId());
         }
         //TaskEventNotificationHelper.notifyEvent(session, doc, (NuxeoPrincipal) session.getPrincipal(),
           //      task, "workflowTaskAssigned", params, "Remember task assigned.", "");

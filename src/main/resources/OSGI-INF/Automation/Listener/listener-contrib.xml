@@ -9,5 +9,18 @@
             <event>workflowTaskAssigned</event>
         </listener>
 
+        <listener name="NotifyToWorkflowInitiatorListener" async="false"
+                  postCommit="false" class="org.athento.nuxeo.wf.listener.NotificationToInitiatorListener">>
+            <event>workflowChanged</event>
+            <event>workflowTaskReassigned</event>
+            <event>workflowTaskDelegated</event>
+        </listener>
     </extension>
+
+    <extension
+            target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService"
+            point="notificationListenerHook">
+        <hookListener name="hookNotificationAudit" class="org.athento.nuxeo.wf.listener.HookWorkflowListener"/>
+    </extension>
+
 </component>

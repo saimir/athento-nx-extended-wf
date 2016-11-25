@@ -5,7 +5,10 @@ import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.PathRef;
+import org.nuxeo.ecm.core.event.EventContext;
+import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.runtime.api.Framework;
 
 import java.util.Map;
@@ -52,5 +55,32 @@ public final class WorkflowUtils {
         return automationManager.run(ctx, operationId, params);
     }
 
+    /**
+     * Get task id from source document.
+     *
+     * @param ctxt
+     * @return
+     */
+    public static String getTaskIdFromDocument(EventContext ctxt) {
+        Task task = (Task) ctxt.getProperties().get("taskInstance");
+        if (task == null) {
+            return null;
+        }
+        return task.getDocument().getId();
+    }
 
+    /**
+     * Get task document.
+     *
+     * @param doc is the document
+     * @return
+     */
+    public static DocumentModel getTaskDocument(CoreSession session, DocumentModel doc) {
+        DocumentModelList tasks =
+                session.query("SELECT * FROM TaskDoc WHERE nt:targetDocumentId = '" + doc.getId() + "'");
+        if (!tasks.isEmpty()) {
+            return tasks.get(0);
+        }
+        return null;
+    }
 }
