@@ -3,7 +3,9 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.wf.utils.Functions;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
+
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
@@ -54,7 +56,7 @@ public class TaskAssignedListener implements EventListener {
                 // Add task property from event document
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
                 if (document != null) {
-                    String taskId = getTaskIdFromDocument(event.getContext());
+                    String taskId = WorkflowUtils.getTaskIdFromDocument(event.getContext());
                     String nodeId = getNodeIdFromDocument(event.getContext());
                     if (taskId != null) {
                         // Set task id
@@ -155,6 +157,11 @@ public class TaskAssignedListener implements EventListener {
                                     tokens.values().iterator().next());
                         }
                         properties.put("tokens", tokens);
+
+                        // Add Fn
+                        if (!properties.containsKey("Fn")) {
+                            properties.put("Fn", new Functions());
+                        }
                     }
                 }
             }
@@ -192,21 +199,9 @@ public class TaskAssignedListener implements EventListener {
         HashMap<String, String> tokens = new HashMap<>();
         TokenAuthenticationService tokenAuthService = Framework.getService(TokenAuthenticationService.class);
         for (String principal : principals) {
-            LOG.info("Generating access token for " + principal);
             tokens.put(principal, tokenAuthService.acquireToken(principal, APP_NAME, "default", "default", "rw"));
         }
         return tokens;
-    }
-
-    /**
-     * Get task id from source document.
-     *
-     * @param ctxt
-     * @return
-     */
-    private String getTaskIdFromDocument(EventContext ctxt) {
-        Task task = (Task) ctxt.getProperties().get("taskInstance");
-        return task.getDocument().getId();
     }
 
     /**
