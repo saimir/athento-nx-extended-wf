@@ -31,8 +31,8 @@
 		<template name="workflowTaskAssignedExtFourth" src="templates/workflowTaskAssignedExtFourth.ftl" />
 		<template name="workflowTaskAssignedExtFifth" src="templates/workflowTaskAssignedExtFifth.ftl" />
 		<template name="workflowTaskAssignedProjectFile" src="templates/workflowTaskAssignedProjectFile.ftl" />
-		<template name="workflowTaskAssignedProjectFileInitiator" src="templates/workflowTaskAssignedProjectFileInitiator.ftl" />
-		<template name="workflowChanged" src="templates/workflowChanged.ftl" />
+		<template name="workflowTaskAssignedGeneric" src="templates/workflowTaskAssignedGeneric.ftl" />
+		<template name="workflowChangedGeneric" src="templates/workflowChangedGeneric.ftl" />
 	</extension>
 
 

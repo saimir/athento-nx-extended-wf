@@ -154,8 +154,8 @@ public class TaskAssignedListener implements EventListener {
                                         params.putAll(properties);
                                         params.put("taskId", taskId);
                                         params.put("toUser", initiator);
-                                        params.put("template", "template:workflowTaskAssignedProjectFileInitiator");
-                                        params.put("subject", "[Nuxeo]Task assigned " + document.getName());
+                                        params.put("template", "template:workflowTaskAssignedGeneric");
+                                        params.put("subject", "[Nuxeo]Task assigned in " + document.getName());
                                         params.put("html", true);
                                         WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
                                     } catch (Exception e) {
@@ -176,8 +176,8 @@ public class TaskAssignedListener implements EventListener {
                                             params.putAll(properties);
                                             params.put("taskId", taskId);
                                             params.put("toUser", user.trim());
-                                            params.put("template", "template:workflowTaskAssignedProjectFileInitiator");
-                                            params.put("subject", "[Nuxeo]Task assigned " + document.getName());
+                                            params.put("template", "template:workflowTaskAssignedGeneric");
+                                            params.put("subject", "[Nuxeo]Task assigned in " + document.getName());
                                             params.put("html", true);
                                             WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
                                         } catch (Exception e) {

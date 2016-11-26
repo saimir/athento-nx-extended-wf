@@ -48,68 +48,6 @@ public class NotificationToInitiatorListener implements EventListener {
                 if (taskId != null) {
                     // Set task id
                     properties.put("taskId", taskId);
-                    String doctype = document.getType();
-                    if (doctype.equals("Invoice")) {
-                        // Set node Id to avoid loading unknown properties in preTask
-                        properties.put("nodeId", nodeId);
-                        // TODO: Right now we put into properties valid and known metatadata, but this might be
-                        // improved so all properties are loaded, and then the template dedices what to use
-                        properties.put("docTotalAmount", document.getPropertyValue("S_FACTURA:totalAmount"));
-                        properties.put("docSubject", document.getPropertyValue("S_FACTURA:subject"));
-                        if (!nodeId.equals("preTask")) {
-                            // In preTask, relation to the project is still not known so these next
-                            // properties can not be loaded
-                            properties.put("docProjectid", document.getPropertyValue("projectFile:projectid"));
-                            CoreSession session = event.getContext().getCoreSession();
-                            DocumentModel project = session.getDocument(new IdRef((String) document.getPropertyValue("projectFile:projectDocid")));
-                            properties.put("projectDocid", project.getId());
-                            properties.put("projectBudget", project.getPropertyValue("invoicing:budget"));
-                            properties.put("projectRemainingBudget", project.getPropertyValue("invoicing:remainingBudget"));
-                        }
-                    }
-                    if (doctype.equals("ProjectFile")) {
-                        // Set node Id to avoid loading unknown properties in preTask
-                        properties.put("nodeId", nodeId);
-                        // TODO: Right now we put into properties valid and known metatadata, but this might be
-                        // improved so all properties are loaded, and then the template dedices what to use
-
-                        properties.put("docDocid", document.getId());
-
-                        // Invoicing values
-
-                        properties.put("docBalance", document.getPropertyValue("invoicing:balance"));
-                        properties.put("docBonusProvider", document.getPropertyValue("invoicing:bonusProvider"));
-                        properties.put("docBudget", document.getPropertyValue("invoicing:budget"));
-                        properties.put("docBudgetBonus", document.getPropertyValue("invoicing:budgetBonus"));
-                        properties.put("docImputation", document.getPropertyValue("invoicing:imputation"));
-                        properties.put("docInvoiceComments", document.getPropertyValue("invoicing:invoiceComments"));
-                        properties.put("docOperativeBudget", document.getPropertyValue("invoicing:operativeBudget"));
-                        properties.put("docRegion", document.getPropertyValue("invoicing:region"));
-                        properties.put("docSociety", document.getPropertyValue("invoicing:society"));
-
-                        // Marketing values
-
-                        properties.put("docCampaignid", document.getPropertyValue("marketing:campaignid"));
-                        properties.put("docCampaignDescription", document.getPropertyValue("marketing:campaignDescription"));
-                        properties.put("docCampaignName", document.getPropertyValue("marketing:campaignName"));
-                        properties.put("docMaterial", document.getPropertyValue("marketing:material"));
-                        properties.put("docQuantity", document.getPropertyValue("marketing:quantity"));
-
-                        // ProjectFile values
-
-                        properties.put("docActivity", document.getPropertyValue("projectFile:activity"));
-                        properties.put("docCategory", document.getPropertyValue("projectFile:category"));
-                        properties.put("docEndPlannedDate", document.getPropertyValue("projectFile:endPlannedDate"));
-                        properties.put("docInitialid", document.getPropertyValue("projectFile:initialid"));
-                        properties.put("docProjectid", document.getPropertyValue("projectFile:projectid"));
-                        properties.put("docProjectName", document.getPropertyValue("projectFile:projectName"));
-                        properties.put("docProviders", document.getPropertyValue("projectFile:providers"));
-                        properties.put("docSolicitantid", document.getPropertyValue("projectFile:solicitantid"));
-                        properties.put("docStartPlannedDate", document.getPropertyValue("projectFile:startPlannedDate"));
-                        properties.put("docSummary", document.getPropertyValue("projectFile:summary"));
-
-                    }
-
                     if (WorkflowUtils.hasContent(document)) {
                         // Set preview url
                         properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
@@ -144,9 +82,9 @@ public class NotificationToInitiatorListener implements EventListener {
                             params.put("taskId", taskId);
                             params.putAll(properties);
                             if ("workflowChanged".equals(event.getName())) {
-                                params.put("template", "template:workflowChanged");
+                                params.put("template", "template:workflowChangedGeneric");
                             } else {
-                                params.put("template", "template:workflowTaskAssignedProjectFileInitiator");
+                                params.put("template", "template:workflowTaskAssignedGeneric");
                             }
                             params.put("subject", "[Nuxeo] " + event.getName() + " " + document.getName());
                             params.put("html", true);
@@ -170,7 +108,7 @@ public class NotificationToInitiatorListener implements EventListener {
                                 params.putAll(properties);
                                 params.put("taskId", taskId);
                                 params.put("toUser", user.trim());
-                                params.put("template", "template:workflowTaskAssignedProjectFileInitiator");
+                                params.put("template", "template:workflowTaskAssignedGeneric");
                                 params.put("subject", "[Nuxeo]Task assigned " + document.getName());
                                 params.put("html", true);
                                 WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
