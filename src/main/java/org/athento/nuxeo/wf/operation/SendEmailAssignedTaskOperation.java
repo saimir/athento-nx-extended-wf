@@ -59,6 +59,9 @@ public class SendEmailAssignedTaskOperation {
             description = "If this value is not empty, the task assigned notification will be send to the this username.")
     protected String toUser;
 
+    @Param(name = "taskId", required = false)
+    protected String taskId;
+
     /**
      * Run operation for a document.
      *
@@ -68,14 +71,18 @@ public class SendEmailAssignedTaskOperation {
      */
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws Exception {
-
         TaskService taskService = Framework.getService(TaskService.class);
-        List<Task> documentTasks = taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session);
-
-        for (Task task : documentTasks) {
+        if (taskId != null) {
+            Task task = taskService.getTask(session, taskId);
+            LOG.info("Task to notify " + task.getId());
             notifyTask(task, doc);
+        } else {
+            List<Task> documentTasks = taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session);
+            LOG.info("Tasks to notify " + documentTasks);
+            for (Task task : documentTasks) {
+                notifyTask(task, doc);
+            }
         }
-
         return doc;
     }
 
@@ -96,11 +103,6 @@ public class SendEmailAssignedTaskOperation {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Sending notification for document:" + doc.getId() + " and task: " + task.getDocument().getId());
         }
-        //TaskEventNotificationHelper.notifyEvent(session, doc, (NuxeoPrincipal) session.getPrincipal(),
-          //      task, "workflowTaskAssigned", params, "Remember task assigned.", "");
-
-        // Add event context to context
-        ctx.putAll(params);
 
         // Check subject
         if (subject == null) {

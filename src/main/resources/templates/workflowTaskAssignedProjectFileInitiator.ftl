@@ -67,10 +67,7 @@
                         Si lo desea, puede acceder a la previsualización del documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${host}${previewUrl}">aquí</a>
                         </p><br/>
                         </#if>
-                        <p style="margin:0;font-size:13px;">
-                            <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important; margin-right:20px;" href="${host}/api/athento/v1/workflow/tasks/${taskId}/transition/validate?token=${token}">&#187; Validar</a>
-                            <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${host}/api/athento/v1/workflow/tasks/${taskId}/transition/reject?token=${token}">&#187; Rechazar</a>
-                        </p><br/>
+                        <br/>
                      </td>
                     </tr>
                   </tbody>

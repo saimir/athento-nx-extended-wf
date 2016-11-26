@@ -91,5 +91,7 @@
 	<xs:element name="regionFifth" type="xs:boolean" />
 
 	<xs:element name="autoSubscribeCreator" type="xs:boolean" default="false" />
+	<xs:element name="onlyNotifyOnChanges" type="xs:boolean" default="false" />
+	<xs:element name="autoSubscribeUsers" type="xs:string" />
 	
 </xs:schema>

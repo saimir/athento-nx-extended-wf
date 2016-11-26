@@ -15,9 +15,60 @@
                       </td>
                     </tr>
                     <tr>
-                       <td>
-                        En el documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${Fn.htmlEscape(docTitle)}</a> ha cambiado el workflow.
-                       </td>
+                      <td style="background-color:#fff;padding:8px 20px;"><br/>
+                        <p style="margin:0;font-size:14px;">
+                        El proyecto <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">${docTitle}</a> necesita aprobación y <strong>ha sido asignado a un usuario o grupo y usted ha sido notificado tras el cambio.</strong>.
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Proyecto: <strong>${docProjectid}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Actividad: <strong>${docActivity}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Resumen: <strong>${docSummary}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Solicitante: <strong>${docSolicitantid}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Núm.solicitud: <strong>${docInitialid}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Descripción: <strong>${docCampaignDescription}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Material: <strong>${docMaterial}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Cantidad: <strong>${docQuantity}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Presupuesto: <strong>${docBudget}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Bonificación: <strong>${docBudgetBonus}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Origen bonificación: <strong>${docBonusProvider}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Imputación: <strong>${docImputation}</strong>
+                        </p><br/>
+                        <p style="margin:0;font-size:14px;">
+                        Sucursal: <strong>${docRegion}</strong>
+                        <p style="margin:0;font-size:14px;">
+                        </p><br/>
+                        <p style="margin:0;font-size:13px;">
+                          <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${docUrl}">&#187; Ver tarea en ${docTitle}</a>
+                        </p><br/>
+                        <#if previewUrl?has_content>
+                        <p style="margin:0;font-size:13px;">
+                        Si lo desea, puede acceder a la previsualización del documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${host}${previewUrl}">aquí</a>
+                        </p><br/>
+                        </#if>
+                        <br/>
+                     </td>
                     </tr>
                   </tbody>
                 </table>
