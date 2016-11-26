@@ -165,6 +165,18 @@
 					</properties>
 					<widget>autoSubscribeCreator</widget>
 				</row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">4</property>
+                    </properties>
+                    <widget>autoSubscribeUsers</widget>
+                </row>
+				<row>
+					<properties mode="any">
+						<property name="nxl_colspan_0">4</property>
+					</properties>
+					<widget>onlyNotifyOnChanges</widget>
+				</row>
 			</rows>
 			<widget name="approvePreEnabled" type="checkbox">
 				<labels>
@@ -554,6 +566,26 @@
 				<translated>true</translated>
 				<fields>
 					<field>extendedWF:autoSubscribeCreator</field>
+				</fields>
+			</widget>
+            <widget name="autoSubscribeUsers" type="text">
+                <labels>
+                    <label mode="any">label.athento-nx-extended-wf.autoSubscribeUsers
+                    </label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>extendedWF:autoSubscribeUsers</field>
+                </fields>
+            </widget>
+			<widget name="onlyNotifyOnChanges" type="checkbox">
+				<labels>
+					<label mode="any">label.athento-nx-extended-wf.onlyNotifyOnChanges
+					</label>
+				</labels>
+				<translated>true</translated>
+				<fields>
+					<field>extendedWF:onlyNotifyOnChanges</field>
 				</fields>
 			</widget>
 		</layout>

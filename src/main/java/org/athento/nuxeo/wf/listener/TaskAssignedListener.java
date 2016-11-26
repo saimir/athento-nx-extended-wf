@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.utils.Functions;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 
+import org.nuxeo.ecm.automation.OperationContext;
+import org.nuxeo.ecm.automation.core.scripting.Scripting;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
@@ -36,11 +38,6 @@ public class TaskAssignedListener implements EventListener {
     private static final String NUXEO_URL = "nuxeo.url";
 
     /**
-     * Token APP.
-     */
-    private static final String APP_NAME = "athentoWorkflowExt";
-
-    /**
      * Handle notification.
      *
      * @param event
@@ -53,32 +50,16 @@ public class TaskAssignedListener implements EventListener {
             // Add host property
             properties.put("host", Framework.getProperty(NUXEO_URL));
             if (event.getContext() instanceof DocumentEventContext) {
+                CoreSession session = event.getContext().getCoreSession();
                 // Add task property from event document
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
                 if (document != null) {
+                    WorkflowUtils.initBindings(properties, event.getContext().getCoreSession(), document);
                     String taskId = WorkflowUtils.getTaskIdFromDocument(event.getContext());
-                    String nodeId = getNodeIdFromDocument(event.getContext());
+                    String nodeId = WorkflowUtils.getNodeIdFromDocument(event.getContext());
                     if (taskId != null) {
                         // Set task id
                         properties.put("taskId", taskId);
-                        boolean autoSubscribe = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
-                                "extendedWF:autoSubscribeCreator", Boolean.class);
-                        if (autoSubscribe) {
-                            CoreSession session = event.getContext().getCoreSession();
-                            DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
-                            if (taskDoc != null) {
-                                String initiator = (String) taskDoc.getPropertyValue("nt:initiator");
-                                Map<String, Object> params = new HashMap<>();
-                                params.put("toUser", initiator);
-                                params.put("subject", "[Nuxeo]Task assigned " + document.getName());
-                                try {
-                                    WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document.getId(), params, session);
-                                } catch (Exception e) {
-                                    LOG.error("Error sending notification to initiator", e);
-                                    throw new ClientException(e);
-                                }
-                            }
-                        }
                         String doctype = document.getType();
                         if (doctype.equals("Invoice")) {
                             // Set node Id to avoid loading unknown properties in preTask
@@ -91,7 +72,6 @@ public class TaskAssignedListener implements EventListener {
                                 // In preTask, relation to the project is still not known so these next 
                                 // properties can not be loaded
                                 properties.put("docProjectid", document.getPropertyValue("projectFile:projectid"));
-                                CoreSession session = event.getContext().getCoreSession();
                                 DocumentModel project = session.getDocument(new IdRef((String) document.getPropertyValue("projectFile:projectDocid")));
                                 properties.put("projectDocid", project.getId());
                                 properties.put("projectBudget", project.getPropertyValue("invoicing:budget"));
@@ -141,26 +121,72 @@ public class TaskAssignedListener implements EventListener {
 
                         }
 
-                        if (hasContent(document)) {
+                        if (WorkflowUtils.hasContent(document)) {
                             // Set preview url
                             properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
-                                    + "/file:content/?token=" + generatePreviewToken(document));
+                                    + "/file:content/?token=" + WorkflowUtils.generatePreviewToken(document));
                         }
                         // Set back to
                         properties.put("backUrl", "/");
                         // Add access token
-                        String actors[] = getTaskPrincipals(event.getContext());
-                        HashMap<String, String> tokens = generateAccessTokensAuth(actors);
+                        String actors[] = WorkflowUtils.getTaskPrincipals(event.getContext());
+                        HashMap<String, String> tokens = WorkflowUtils.generateAccessTokensAuth(actors);
                         if (!tokens.isEmpty()) {
                             // FIXME: Now, it is only for one user by group
                             properties.put("token",
                                     tokens.values().iterator().next());
                         }
                         properties.put("tokens", tokens);
-
-                        // Add Fn
-                        if (!properties.containsKey("Fn")) {
-                            properties.put("Fn", new Functions());
+                        boolean onlyNotifyOnChanges = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                                "extendedWF:onlyNotifyOnChanges", Boolean.class);
+                        if (!onlyNotifyOnChanges) {
+                            // Send email to others
+                            boolean autoSubscribe = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                                    "extendedWF:autoSubscribeCreator", Boolean.class);
+                            if (autoSubscribe) {
+                                DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                                if (taskDoc != null) {
+                                    try {
+                                        String processId = (String) taskDoc.getPropertyValue("nt:processId");
+                                        DocumentModel processInstance = session.getDocument(new IdRef(processId));
+                                        String initiator = (String) processInstance.getPropertyValue("docri:initiator");
+                                        Map<String, Object> params = new HashMap<>();
+                                        params.putAll(properties);
+                                        params.put("taskId", taskId);
+                                        params.put("toUser", initiator);
+                                        params.put("template", "template:workflowTaskAssignedProjectFileInitiator");
+                                        params.put("subject", "[Nuxeo]Task assigned " + document.getName());
+                                        params.put("html", true);
+                                        WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
+                                    } catch (Exception e) {
+                                        LOG.error("Error sending notification to initiator", e);
+                                        throw new ClientException(e);
+                                    }
+                                }
+                            }
+                            String autoSubscribeUsers = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                                    "extendedWF:autoSubscribeUsers", String.class);
+                            if (autoSubscribeUsers != null) {
+                                DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                                if (taskDoc != null) {
+                                    String[] users = autoSubscribeUsers.split(",");
+                                    for (String user : users) {
+                                        try {
+                                            Map<String, Object> params = new HashMap<>();
+                                            params.putAll(properties);
+                                            params.put("taskId", taskId);
+                                            params.put("toUser", user.trim());
+                                            params.put("template", "template:workflowTaskAssignedProjectFileInitiator");
+                                            params.put("subject", "[Nuxeo]Task assigned " + document.getName());
+                                            params.put("html", true);
+                                            WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
+                                        } catch (Exception e) {
+                                            LOG.error("Error sending notification to user " + user, e);
+                                            throw new ClientException(e);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -168,77 +194,5 @@ public class TaskAssignedListener implements EventListener {
         }
     }
 
-    /**
-     * Generate a simple preview token based on dublincore:modified metadata.
-     *
-     * @param doc document
-     * @return token
-     */
-    private String generatePreviewToken(DocumentModel doc) {
-        // Encoding token
-        return Base64.encodeBase64String(String.format("%s#control", doc.getChangeToken()).getBytes());
-    }
-
-    /**
-     * Check for document content.
-     *
-     * @param document
-     * @return
-     */
-    private boolean hasContent(DocumentModel document) {
-        return document.getPropertyValue("file:content") != null;
-    }
-
-    /**
-     * Generate access token to document based en Nuxeo Token Auth.
-     *
-     * @param principals
-     * @return generated access token
-     */
-    private HashMap<String, String> generateAccessTokensAuth(String[] principals) {
-        HashMap<String, String> tokens = new HashMap<>();
-        TokenAuthenticationService tokenAuthService = Framework.getService(TokenAuthenticationService.class);
-        for (String principal : principals) {
-            tokens.put(principal, tokenAuthService.acquireToken(principal, APP_NAME, "default", "default", "rw"));
-        }
-        return tokens;
-    }
-
-    /**
-     * Get task principals.
-     *
-     * @param ctxt
-     * @return
-     */
-    private String[] getTaskPrincipals(EventContext ctxt) {
-        List<String> actorResult = new ArrayList<String>();
-        Task task = (Task) ctxt.getProperties().get("taskInstance");
-        UserManager userManager = Framework.getService(UserManager.class);
-        List<String> actors = task.getActors();
-        for (String actor : actors) {
-            if (actor.startsWith("group:")) {
-                NuxeoGroup group = userManager.getGroup(actor.split(":")[1]);
-                for (String user : group.getMemberUsers()) {
-                    actorResult.add(user);
-                }
-            } else if (actor.startsWith("user:")) {
-                actorResult.add(actor.split(":")[1]);
-            } else {
-                actorResult.add(actor);
-            }
-        }
-        return actorResult.toArray(new String[0]);
-    }
-
-    /**
-     * Get from source document.
-     *
-     * @param ctxt
-     * @return
-     */
-    private String getNodeIdFromDocument(EventContext ctxt) {
-        String nodeId = (String) ctxt.getProperties().get("nodeId");
-        return nodeId;
-    }
 
 }
