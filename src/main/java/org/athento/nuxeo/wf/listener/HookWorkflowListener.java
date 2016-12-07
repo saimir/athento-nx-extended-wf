@@ -92,19 +92,19 @@ public class HookWorkflowListener implements NotificationListenerHook {
             }
             AuditLogger auditLogger = Framework.getService(AuditLogger.class);
             LogEntry entry = newEntry(doc,
-                    event.getContext().getPrincipal().getName(), getStringFromSet(users));
+                    event.getContext().getPrincipal().getName(), WorkflowUtils.getStringFromSet(users));
             auditLogger.addLogEntries(Collections.singletonList(entry));
         }
     }
 
-    private String getStringFromSet(Set<String> users) {
-        StringBuffer userBuff = new StringBuffer();
-        for (Iterator<String> it = users.iterator(); it.hasNext();) {
-            userBuff.append(it.next() + (it.hasNext() ? ", " : ""));
-        }
-        return userBuff.toString();
-    }
-
+    /**
+     * New log entry.
+     *
+     * @param doc
+     * @param principal
+     * @param users
+     * @return
+     */
     protected LogEntry newEntry(DocumentModel doc, String principal, String users) {
         LogEntry entry = auditLogger.newLogEntry();
         entry.setEventId("emailSent");

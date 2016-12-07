@@ -1,12 +1,17 @@
 package org.athento.nuxeo.wf.utils;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
-import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.core.scripting.*;
+import org.nuxeo.ecm.automation.core.scripting.Functions;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.EventContext;
+import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
+import org.nuxeo.ecm.platform.routing.core.impl.GraphNode;
+import org.nuxeo.ecm.platform.routing.core.impl.GraphRoute;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
@@ -20,6 +25,10 @@ import java.util.*;
  */
 public final class WorkflowUtils {
 
+    /** Log. */
+    private static final Log LOG = LogFactory.getLog(WorkflowUtils.class);
+
+    /** Extended config path. */
     public static final String CONFIG_PATH = "/ExtendedConfig";
 
     /**
@@ -71,6 +80,16 @@ public final class WorkflowUtils {
         ctx.putAll(params);
         ctx.setInput(input);
         return automationManager.run(ctx, operationId, params);
+    }
+
+    /**
+     * Get task from source document.
+     *
+     * @param ctxt
+     * @return task
+     */
+    public static Task getTaskFromDocument(EventContext ctxt) {
+        return (Task) ctxt.getProperties().get("taskInstance");
     }
 
     /**
@@ -190,5 +209,101 @@ public final class WorkflowUtils {
         map.put("CurrentUser", (NuxeoPrincipal) session.getPrincipal());
         map.put("currentUser", (NuxeoPrincipal) session.getPrincipal());
         map.put("Env", Framework.getProperties());
+    }
+
+    /**
+     * Get string from a Set.
+     *
+     * @param set
+     * @return
+     */
+    public static String getStringFromSet(Set<String> set) {
+        StringBuffer userBuff = new StringBuffer();
+        for (Iterator<String> it = set.iterator(); it.hasNext();) {
+            userBuff.append(it.next() + (it.hasNext() ? ", " : ""));
+        }
+        return userBuff.toString();
+    }
+
+    /**
+     * Get task information.
+     *
+     * @param session
+     * @param task
+     * @param getFormVariables
+     * @return
+     * @throws ClientException
+     */
+    public static Map<String, Serializable> getTaskInfo(final CoreSession session, final Task task, final boolean getFormVariables)
+            throws ClientException {
+        final String routeDocId = task.getVariable(DocumentRoutingConstants.TASK_ROUTE_INSTANCE_DOCUMENT_ID_KEY);
+        final String nodeId = task.getVariable(DocumentRoutingConstants.TASK_NODE_ID_KEY);
+        if (routeDocId == null) {
+            throw new ClientException(
+                    "Can not get the source graph for this task");
+        }
+        if (nodeId == null) {
+            throw new ClientException(
+                    "Can not get the source node for this task");
+        }
+        final HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+        new UnrestrictedSessionRunner(session) {
+            @Override
+            public void run() throws ClientException {
+                DocumentModel doc = session.getDocument(new IdRef(routeDocId));
+                GraphRoute route = doc.getAdapter(GraphRoute.class);
+                GraphNode node = route.getNode(nodeId);
+
+                if (getFormVariables) {
+                    map.putAll(node.getVariables());
+                    map.putAll(route.getVariables());
+                }
+            }
+        }.runUnrestricted();
+        return map;
+    }
+
+    /**
+     * Notify users for task. Based on the property notifyUsers.
+     *
+     * @param session
+     * @param task
+     * @param document
+     * @param properties
+     */
+    public static void notifiyUsers(CoreSession session, Task task, DocumentModel document, Map<String, Serializable> properties) {
+        if (task != null) {
+            String [] notifyUsers = (String []) properties.get("notifyUsers");
+            for (String notifyUser : notifyUsers) {
+                LOG.info("==" + notifyUser);
+                sendEmailNotification(session, task, document, notifyUser, properties);
+            }
+        }
+    }
+
+    /**
+     * Send email notification.
+     *
+     * @param session
+     * @param task
+     * @param document
+     * @param user
+     * @param properties
+     */
+    public static void sendEmailNotification(CoreSession session, Task task, DocumentModel document, String user, Map<String, Serializable> properties) {
+        try {
+            LOG.info("Sending email notification to " + user);
+            Map<String, Object> params = new HashMap<>();
+            params.putAll(properties);
+            params.put("taskId", task.getId());
+            params.put("toUser", user.trim());
+            params.put("template", "template:workflowTaskAssignedGeneric");
+            params.put("subject", "[Nuxeo]Task assigned " + document.getName());
+            params.put("html", true);
+            WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
+        } catch (Exception e) {
+            LOG.error("Error sending notification to notify user: " + user, e);
+            throw new ClientException(e);
+        }
     }
 }

@@ -10,21 +10,23 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.ecm.platform.task.Task;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Listener to notify the workflow initiator.
+ * Listener to notify changes to users.
  */
-public class NotificationToInitiatorListener implements EventListener {
+public class WorkflowChangeListener implements EventListener {
 
     /**
      * Log.
      */
     private static final Log LOG = LogFactory
-            .getLog(NotificationToInitiatorListener.class);
+            .getLog(WorkflowChangeListener.class);
 
 
     /**
@@ -38,16 +40,18 @@ public class NotificationToInitiatorListener implements EventListener {
         if (event != null) {
             if (event.getContext() instanceof DocumentEventContext) {
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
-                String taskId = WorkflowUtils.getTaskIdFromDocument(event.getContext());
-                if (taskId == null) {
+                Task task = WorkflowUtils.getTaskFromDocument(event.getContext());
+                if (task == null) {
                     return;
                 }
+                CoreSession session = event.getContext().getCoreSession();
                 Map<String, Serializable> properties = event.getContext().getProperties();
                 WorkflowUtils.initBindings(properties, event.getContext().getCoreSession(), document);
-                String nodeId = WorkflowUtils.getNodeIdFromDocument(event.getContext());
-                if (taskId != null) {
+                if (task != null) {
+                    Map<String, Serializable> taskInfoParams = WorkflowUtils.getTaskInfo(session, task, true);
+                    properties.putAll(taskInfoParams);
                     // Set task id
-                    properties.put("taskId", taskId);
+                    properties.put("taskId", task.getId());
                     if (WorkflowUtils.hasContent(document)) {
                         // Set preview url
                         properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
@@ -65,13 +69,13 @@ public class NotificationToInitiatorListener implements EventListener {
                     }
                     properties.put("docTitle", document.getTitle());
                     properties.put("tokens", tokens);
-
+                    // Check task notifyUsers
+                    WorkflowUtils.notifiyUsers(session, task, document, properties);
                 }
                 boolean autoSubscribe = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
                         "extendedWF:autoSubscribeCreator", Boolean.class);
                 if (autoSubscribe) {
-                    CoreSession session = event.getContext().getCoreSession();
-                    DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                    DocumentModel taskDoc = session.getDocument(new IdRef(task.getId()));
                     if (taskDoc != null) {
                         try {
                             String processId = (String) taskDoc.getPropertyValue("nt:processId");
@@ -79,7 +83,7 @@ public class NotificationToInitiatorListener implements EventListener {
                             String initiator = (String) processInstance.getPropertyValue("docri:initiator");
                             Map<String, Object> params = new HashMap<>();
                             params.put("toUser", initiator);
-                            params.put("taskId", taskId);
+                            params.put("taskId", task.getId());
                             params.putAll(properties);
                             if ("workflowChanged".equals(event.getName())) {
                                 params.put("template", "template:workflowChangedGeneric");
@@ -98,24 +102,12 @@ public class NotificationToInitiatorListener implements EventListener {
                 String autoSubscribeUsers = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
                         "extendedWF:autoSubscribeUsers", String.class);
                 if (autoSubscribeUsers != null) {
-                    CoreSession session = event.getContext().getCoreSession();
-                    DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                    DocumentModel taskDoc = session.getDocument(new IdRef(task.getId()));
                     if (taskDoc != null) {
                         String[] users = autoSubscribeUsers.split(",");
                         for (String user : users) {
-                            try {
-                                Map<String, Object> params = new HashMap<>();
-                                params.putAll(properties);
-                                params.put("taskId", taskId);
-                                params.put("toUser", user.trim());
-                                params.put("template", "template:workflowTaskAssignedGeneric");
-                                params.put("subject", "[Nuxeo]Task assigned " + document.getName());
-                                params.put("html", true);
-                                WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
-                            } catch (Exception e) {
-                                LOG.error("Error sending notification to user " + user, e);
-                                throw new ClientException(e);
-                            }
+                            // Send email to user
+                            WorkflowUtils.sendEmailNotification(session, task, document, user, properties);
                         }
                     }
                 }

@@ -23,4 +23,13 @@ public class Functions implements Serializable {
     public String escapeHtml(Object obj) {
         return StringEscapeUtils.escapeHtml(obj.toString());
     }
+
+    public String removeUserPrefix(String username) {
+        if (username.startsWith("user:")) {
+            username = username.replace("user:", "");
+        } else if (username.startsWith("group:")) {
+            username = username.replace("group:", "");
+        }
+        return username;
+    }
 }

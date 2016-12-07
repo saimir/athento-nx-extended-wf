@@ -9,12 +9,13 @@
             <event>workflowTaskAssigned</event>
         </listener>
 
-        <listener name="NotifyToWorkflowInitiatorListener" async="false"
-                  postCommit="true" class="org.athento.nuxeo.wf.listener.NotificationToInitiatorListener">>
+        <listener name="AthentoWorkflowChangeListener" async="false"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.WorkflowChangeListener">
             <event>workflowChanged</event>
             <event>workflowTaskReassigned</event>
             <event>workflowTaskDelegated</event>
         </listener>
+
     </extension>
 
     <extension

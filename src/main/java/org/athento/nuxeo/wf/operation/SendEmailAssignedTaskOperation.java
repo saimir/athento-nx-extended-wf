@@ -128,6 +128,12 @@ public class SendEmailAssignedTaskOperation {
             mailParams.put("HTML", html);
 
             if (toUser != null) {
+                if (toUser.startsWith("user:")) {
+                    toUser = toUser.replace("user:", "");
+                }
+                if (toUser.startsWith("group:")) {
+                    toUser = toUser.replace("group:", "");
+                }
                 mailParams.put("to", new PlatformFunctions().getEmail(toUser));
                 // Run send email operation to the param "to" email
                 runOperation("Notification.SendMail", doc, mailParams, session, ctx);
