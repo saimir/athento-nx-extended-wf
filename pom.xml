@@ -325,7 +325,7 @@
 								<url>http://www.athento.com</url>
 								<title>${project.name}</title>
 								<description>${project.description}</description>
-								<platform>cap-6.0</platform>
+								<platform>cap-7.10</platform>
 							</properties>
 							<outputDir>addon</outputDir>
 						</configuration>
