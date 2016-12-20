@@ -54,7 +54,9 @@ public class NotificationBean implements Serializable {
         Task task = taskDoc.getAdapter(Task.class);
         eventContext.setProperty("taskInstance", task);
         WorkflowUtils.initBindings(eventContext.getProperties(), eventContext.getCoreSession(), document);
-        String nodeId = task.getVariables().get(DocumentRoutingConstants.OPERATION_STEP_DOCUMENT_KEY);
+        String documentNodeId = task.getVariables().get(DocumentRoutingConstants.OPERATION_STEP_DOCUMENT_KEY);
+        DocumentModel documentNode =  eventContext.getCoreSession().getDocument(new IdRef(documentNodeId));
+        String nodeId = (String) documentNode.getPropertyValue("rnode:nodeId");
         Map<String, Serializable> properties = eventContext.getProperties();
         String doctype = document.getType();
         if (doctype.equals("Invoice")) {
@@ -64,10 +66,14 @@ public class NotificationBean implements Serializable {
             // improved so all properties are loaded, and then the template dedices what to use
             properties.put("docTotalAmount", document.getPropertyValue("S_FACTURA:totalAmount"));
             properties.put("docSubject", document.getPropertyValue("S_FACTURA:subject"));
-            if (!nodeId.equals("preTask")) {
+            if (!nodeId.equals("preTask") & (!nodeId.equals("pre-evaluation"))) {
                 // In preTask, relation to the project is still not known so these next
                 // properties can not be loaded
                 properties.put("docProjectid", document.getPropertyValue("projectFile:projectid"));
+                LOG.info("For document in navigation context: " + document.getId()
+                        + ". For Node equal to: " + nodeId
+                        + ", Project Docid property is: "
+                        + document.getPropertyValue("projectFile:projectDocid"));
                 DocumentModel project = documentManager.getDocument(new IdRef((String) document.getPropertyValue("projectFile:projectDocid")));
                 properties.put("projectDocid", project.getId());
                 properties.put("projectBudget", project.getPropertyValue("invoicing:budget"));
