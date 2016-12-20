@@ -32,4 +32,8 @@ public class Functions implements Serializable {
         }
         return username;
     }
+
+    public boolean startsWith(String str, String prefix) {
+        return str.startsWith(prefix);
+    }
 }

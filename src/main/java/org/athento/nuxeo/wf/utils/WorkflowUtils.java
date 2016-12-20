@@ -274,6 +274,9 @@ public final class WorkflowUtils {
     public static void notifiyUsers(CoreSession session, Task task, DocumentModel document, Map<String, Serializable> properties) {
         if (task != null) {
             String [] notifyUsers = (String []) properties.get("notifyUsers");
+            if (notifyUsers == null) {
+                return;
+            }
             for (String notifyUser : notifyUsers) {
                 LOG.info("==" + notifyUser);
                 sendEmailNotification(session, task, document, notifyUser, properties);

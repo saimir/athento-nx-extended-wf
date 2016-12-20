@@ -16,6 +16,12 @@
             <event>workflowTaskDelegated</event>
         </listener>
 
+        <!-- Auto-start workflow after document created  (minimal priority) -->
+        <listener name="AutostartWorkflowListener" async="false" priority="1"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.AutostartWorkflowListener">
+            <event>documentCreated</event>
+        </listener>
+
     </extension>
 
     <extension

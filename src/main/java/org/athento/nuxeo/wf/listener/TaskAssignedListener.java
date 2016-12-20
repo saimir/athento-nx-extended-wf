@@ -54,6 +54,7 @@ public class TaskAssignedListener implements EventListener {
                 // Add task property from event document
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
                 if (document != null) {
+                    LOG.info(event.getContext().getProperties());
                     WorkflowUtils.initBindings(properties, event.getContext().getCoreSession(), document);
                     String taskId = WorkflowUtils.getTaskIdFromDocument(event.getContext());
                     String nodeId = WorkflowUtils.getNodeIdFromDocument(event.getContext());
