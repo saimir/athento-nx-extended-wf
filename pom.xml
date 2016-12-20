@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.athento.nuxeo</groupId>
 	<artifactId>athento-nx-extended-wf</artifactId>
-	<version>2.1-SNAPSHOT</version>
+	<version>1.5.6</version>
 	<name>Athento NX Extended WF</name>
 	<description>Athento NX Extended Workflow</description>
 	<organization>
@@ -325,7 +325,7 @@
 								<url>http://www.athento.com</url>
 								<title>${project.name}</title>
 								<description>${project.description}</description>
-								<platform>cap-7.10</platform>
+								<platform>cap-6.0</platform>
 							</properties>
 							<outputDir>addon</outputDir>
 						</configuration>
@@ -367,7 +367,7 @@
 									<url>http://www.athento.com</url>
 									<title>${project.name}</title>
 									<description>${project.description}</description>
-									<platform>cap-7.10</platform>
+									<platform>cap-6.0</platform>
 								</properties>
 								<outputDir>addon</outputDir>
 							</configuration>
