@@ -18,5 +18,6 @@ Nuxeo-Component: OSGI-INF/Automation/Automation-chains/chains-contrib.xml,
  OSGI-INF/ExtendedConfig/extended-config-schemas-contrib.xml, 
  OSGI-INF/ExtendedConfig/extended-config-vocabularies-contrib.xml,
  OSGI-INF/Automation/operations-contrib.xml,
- OSGI-INF/Document-model/lifecycle-contrib.xml
+ OSGI-INF/Document-model/lifecycle-contrib.xml,
+ OSGI-INF/Listing-forms/layouts-contrib.xml
 Created-By: Athento

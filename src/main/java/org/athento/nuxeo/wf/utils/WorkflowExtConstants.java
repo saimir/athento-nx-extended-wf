@@ -5,7 +5,7 @@ package org.athento.nuxeo.wf.utils;
  */
 public final class WorkflowExtConstants {
 
-    public static final String WORKFLOW_CATEGORY = "workflowCategory";
+    public static final String WORKFLOW_CATEGORY = "eventWorkflowCategory";
 
     public static final String WORKFLOW_AUTOSTART_EVENT = "workflowAutostart";
     public static final String WORKFLOW_START_EVENT = "workflowStart";
