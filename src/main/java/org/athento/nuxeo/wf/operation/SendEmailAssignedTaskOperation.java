@@ -74,11 +74,9 @@ public class SendEmailAssignedTaskOperation {
         TaskService taskService = Framework.getService(TaskService.class);
         if (taskId != null) {
             Task task = taskService.getTask(session, taskId);
-            LOG.info("Task to notify " + task.getId());
             notifyTask(task, doc);
         } else {
             List<Task> documentTasks = taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session);
-            LOG.info("Tasks to notify " + documentTasks);
             for (Task task : documentTasks) {
                 notifyTask(task, doc);
             }

@@ -53,7 +53,6 @@ public class WorkflowAthActionBean implements Serializable {
                 documentManager.getPrincipal(),
                 document);
         Task task = taskDoc.getAdapter(Task.class);
-        LOG.info("Task to audit " + task.getId());
         eventContext.setProperty("taskInstance", task);
         WorkflowUtils.initBindings(eventContext.getProperties(), eventContext.getCoreSession(), document);
         String documentNodeId = task.getVariables().get(DocumentRoutingConstants.OPERATION_STEP_DOCUMENT_KEY);
