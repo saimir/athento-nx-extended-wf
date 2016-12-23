@@ -3,19 +3,18 @@ package org.athento.nuxeo.wf.listener;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.international.StatusMessage;
+import org.athento.nuxeo.wf.utils.WorkflowExtConstants;
+import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.actions.ActionContext;
-import org.nuxeo.ecm.platform.actions.ActionService;
 import org.nuxeo.ecm.platform.actions.ejb.ActionManager;
 import org.nuxeo.ecm.platform.actions.jsf.JSFActionContext;
 import org.nuxeo.ecm.platform.actions.seam.SeamActionContext;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoute;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoutingService;
-import org.nuxeo.ecm.platform.routing.core.impl.DocumentRouteElementImpl;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphRoute;
 import org.nuxeo.ecm.platform.ui.web.util.SeamContextHelper;
 import org.nuxeo.runtime.api.Framework;
@@ -48,17 +47,21 @@ public class AutostartWorkflowListener implements EventListener {
         if (event != null) {
             if (event.getContext() instanceof DocumentEventContext) {
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
-                if (document.hasFacet("autoinitiable")) {
-                    // Start workflow (without Seam events threw)
-                    DocumentModel selectedRoute = getFirstAutostartRouteModelForDocument(document, event.getContext().getCoreSession());
-                    if (selectedRoute != null) {
-                        DocumentRoute currentRoute = selectedRoute.getAdapter(DocumentRoute.class);
+                // Start workflow (without Seam events threw)
+                DocumentModel selectedRoute = getFirstAutostartRouteModelForDocument(document, event.getContext().getCoreSession());
+                if (selectedRoute != null) {
+                    DocumentRoute currentRoute = selectedRoute.getAdapter(DocumentRoute.class);
+                    if (document.hasFacet("autoinitiable")) {
                         List<String> documentIds = new ArrayList<String>();
                         documentIds.add(document.getId());
                         currentRoute.setAttachedDocuments(documentIds);
                         getDocumentRoutingService().createNewInstance(
                                 currentRoute.getDocument().getName(), currentRoute.getAttachedDocuments(),
                                 event.getContext().getCoreSession(), true);
+                        // Add audit with autostart
+                        String comment = "Workflow " + currentRoute.getName() + " was autocreated";
+                        WorkflowUtils.newEntry(document, event.getContext().getPrincipal().getName(),
+                                WorkflowExtConstants.WORKFLOW_AUTOSTART_EVENT, WorkflowExtConstants.WORKFLOW_CATEGORY, comment, null, null);
                     }
                 }
             }
@@ -113,8 +116,8 @@ public class AutostartWorkflowListener implements EventListener {
      * @return
      */
     private boolean routeHasAutostartTask(GraphRoute graphRoute) {
-        LOG.info("Start node " + graphRoute.getStartNode().getDocument().getRef());
-        return graphRoute.getStartNode() != null && (Boolean) graphRoute.getStartNode().getDocument().getPropertyValue("rnode:executeOnlyFirstTransition");
+        return graphRoute.getStartNode() != null &&
+                (Boolean) graphRoute.getStartNode().getDocument().getPropertyValue("rnode:executeOnlyFirstTransition");
     }
 
     /**

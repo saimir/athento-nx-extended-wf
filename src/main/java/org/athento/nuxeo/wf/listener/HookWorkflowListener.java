@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.utils.Functions;
+import org.athento.nuxeo.wf.utils.WorkflowExtConstants;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.event.DocumentEventCategories;
@@ -38,8 +39,6 @@ public class HookWorkflowListener implements NotificationListenerHook {
 
     /** Notification service. */
     private NotificationService notificationService = NotificationServiceHelper.getNotificationService();
-
-    private AuditLogger auditLogger = Framework.getService(AuditLogger.class);
 
     private UserManager userManager = null;
 
@@ -90,38 +89,13 @@ public class HookWorkflowListener implements NotificationListenerHook {
                 }
 
             }
-            AuditLogger auditLogger = Framework.getService(AuditLogger.class);
-            LogEntry entry = newEntry(doc,
-                    event.getContext().getPrincipal().getName(), WorkflowUtils.getStringFromSet(users));
-            auditLogger.addLogEntries(Collections.singletonList(entry));
+            if (!users.isEmpty()) {
+                // Add email to audit
+                String comment = "Email sent to " + WorkflowUtils.getStringFromSet(users);
+                WorkflowUtils.newEntry(doc,
+                        event.getContext().getPrincipal().getName(), "emailSent", DocumentEventCategories.EVENT_DOCUMENT_CATEGORY, comment, null, null);
+            }
         }
-    }
-
-    /**
-     * New log entry.
-     *
-     * @param doc
-     * @param principal
-     * @param users
-     * @return
-     */
-    protected LogEntry newEntry(DocumentModel doc, String principal, String users) {
-        LogEntry entry = auditLogger.newLogEntry();
-        entry.setEventId("emailSent");
-        entry.setEventDate(new Date());
-        entry.setCategory(DocumentEventCategories.EVENT_DOCUMENT_CATEGORY);
-        entry.setDocUUID(doc.getId());
-        entry.setDocPath(doc.getPathAsString());
-        entry.setComment("Email sent to " + users);
-        entry.setPrincipalName(principal);
-        entry.setDocType(doc.getType());
-        entry.setRepositoryId(doc.getRepositoryName());
-        try {
-            entry.setDocLifeCycle(doc.getCurrentLifeCycleState());
-        } catch (Exception e) {
-            // ignore error
-        }
-        return entry;
     }
 
     /**

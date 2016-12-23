@@ -3,6 +3,7 @@ package org.athento.nuxeo.wf.bean;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.wf.utils.WorkflowExtConstants;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -14,9 +15,9 @@ import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventProducer;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
-import org.nuxeo.ecm.core.rest.DocumentHelper;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
 import org.nuxeo.ecm.platform.task.Task;
+import org.nuxeo.ecm.platform.task.TaskComment;
 import org.nuxeo.ecm.platform.task.TaskEventNames;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.runtime.api.Framework;
@@ -27,10 +28,10 @@ import java.util.Map;
 /**
  * Created by victorsanchez on 24/11/16.
  */
-@Name("extWfNotificationBean")
-public class NotificationBean implements Serializable {
+@Name("athWorkflowExtActionBean")
+public class WorkflowAthActionBean implements Serializable {
 
-    private Log LOG = LogFactory.getLog(NotificationBean.class);
+    private Log LOG = LogFactory.getLog(WorkflowAthActionBean.class);
 
     @In(create = true, required = false)
     protected transient CoreSession documentManager;
@@ -52,12 +53,43 @@ public class NotificationBean implements Serializable {
                 documentManager.getPrincipal(),
                 document);
         Task task = taskDoc.getAdapter(Task.class);
+        LOG.info("Task to audit " + task.getId());
         eventContext.setProperty("taskInstance", task);
         WorkflowUtils.initBindings(eventContext.getProperties(), eventContext.getCoreSession(), document);
         String documentNodeId = task.getVariables().get(DocumentRoutingConstants.OPERATION_STEP_DOCUMENT_KEY);
         DocumentModel documentNode =  eventContext.getCoreSession().getDocument(new IdRef(documentNodeId));
         String nodeId = (String) documentNode.getPropertyValue("rnode:nodeId");
+
+        // Get properties
         Map<String, Serializable> properties = eventContext.getProperties();
+
+        // Manage workflow properties for document and node
+        manageProperties(document, nodeId, properties);
+
+        if (hasContent(document)) {
+            // Set preview url
+            properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
+                    + "/file:content/?token=" + generatePreviewToken(document));
+        }
+        // Set back to
+        properties.put("backUrl", "/");
+        // Create audit of change
+        WorkflowUtils.createAuditChange(document, task, documentManager.getPrincipal().getName());
+        // Fire event
+        Event event = eventContext.newEvent("workflowChanged");
+        Framework.getLocalService(EventProducer.class).fireEvent(event);
+    }
+
+    /**
+     * It will be deprecated (No internal workflows in this addon).
+     *
+     * Manage properties.
+     *
+     * @param document
+     * @param nodeId
+     * @param properties
+     */
+    private void manageProperties(DocumentModel document, String nodeId, Map<String, Serializable> properties) {
         String doctype = document.getType();
         if (doctype.equals("Invoice")) {
             // Set node Id to avoid loading unknown properties in preTask
@@ -122,16 +154,6 @@ public class NotificationBean implements Serializable {
             properties.put("docSummary", document.getPropertyValue("projectFile:summary"));
 
         }
-
-        if (hasContent(document)) {
-            // Set preview url
-            properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()
-                    + "/file:content/?token=" + generatePreviewToken(document));
-        }
-        // Set back to
-        properties.put("backUrl", "/");
-        Event event = eventContext.newEvent("workflowChanged");
-        Framework.getLocalService(EventProducer.class).fireEvent(event);
     }
 
     /**
