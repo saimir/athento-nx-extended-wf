@@ -4,6 +4,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.athento.nuxeo.wf.utils.Functions;
+import org.athento.nuxeo.wf.utils.WorkflowExtConstants;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 
 import org.nuxeo.ecm.automation.OperationContext;
@@ -54,7 +55,6 @@ public class TaskAssignedListener implements EventListener {
                 // Add task property from event document
                 DocumentModel document = ((DocumentEventContext) event.getContext()).getSourceDocument();
                 if (document != null) {
-                    LOG.info(event.getContext().getProperties());
                     WorkflowUtils.initBindings(properties, event.getContext().getCoreSession(), document);
                     String taskId = WorkflowUtils.getTaskIdFromDocument(event.getContext());
                     String nodeId = WorkflowUtils.getNodeIdFromDocument(event.getContext());

@@ -5,17 +5,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
-import org.nuxeo.ecm.automation.core.scripting.*;
-import org.nuxeo.ecm.automation.core.scripting.Functions;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.EventContext;
+import org.nuxeo.ecm.platform.audit.api.AuditLogger;
+import org.nuxeo.ecm.platform.audit.api.ExtendedInfo;
+import org.nuxeo.ecm.platform.audit.api.LogEntry;
+import org.nuxeo.ecm.platform.audit.impl.ExtendedInfoImpl;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphNode;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphRoute;
 import org.nuxeo.ecm.platform.task.Task;
+import org.nuxeo.ecm.platform.task.TaskComment;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
 import org.nuxeo.runtime.api.Framework;
+import org.restlet.util.DateUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -126,7 +130,7 @@ public final class WorkflowUtils {
      */
     public static DocumentModel getTaskDocument(CoreSession session, DocumentModel doc) {
         DocumentModelList tasks =
-                session.query("SELECT * FROM TaskDoc WHERE nt:targetDocumentId = '" + doc.getId() + "'");
+                session.query("SELECT * FROM TaskDoc WHERE nt:targetDocumentId = '" + doc.getId() + "' AND ecm:currentLifeCycleState = 'ended' ORDER BY dc:modified DESC");
         if (!tasks.isEmpty()) {
             return tasks.get(0);
         }
@@ -278,8 +282,9 @@ public final class WorkflowUtils {
                 return;
             }
             for (String notifyUser : notifyUsers) {
-                LOG.info("==" + notifyUser);
-                sendEmailNotification(session, task, document, notifyUser, properties);
+                if (notifyUser != null && !notifyUser.isEmpty()) {
+                    sendEmailNotification(session, task, document, notifyUser, properties);
+                }
             }
         }
     }
@@ -295,6 +300,9 @@ public final class WorkflowUtils {
      */
     public static void sendEmailNotification(CoreSession session, Task task, DocumentModel document, String user, Map<String, Serializable> properties) {
         try {
+            if (user == null || user.isEmpty()) {
+                return;
+            }
             LOG.info("Sending email notification to " + user);
             Map<String, Object> params = new HashMap<>();
             params.putAll(properties);
@@ -309,4 +317,63 @@ public final class WorkflowUtils {
             throw new ClientException(e);
         }
     }
+
+    /**
+     * New log entry.
+     *
+     * @param doc
+     * @param principal
+     * @param event
+     * @param category
+     * @param comment
+     * @param directive
+     * @return
+     */
+    public static LogEntry newEntry(DocumentModel doc, String principal, String event, String category, String comment, ExtendedInfo directive, ExtendedInfo dueDate) {
+        AuditLogger auditLogger = Framework.getService(AuditLogger.class);
+        LogEntry entry = auditLogger.newLogEntry();
+        entry.setEventId(event);
+        entry.setEventDate(new Date());
+        entry.setCategory(category);
+        entry.setDocUUID(doc.getId());
+        entry.setDocPath(doc.getPathAsString());
+        entry.setComment(comment);
+        entry.setPrincipalName(principal);
+        entry.setDocType(doc.getType());
+        entry.setRepositoryId(doc.getRepositoryName());
+        if (directive != null) {
+            entry.getExtendedInfos().put("directive", directive);
+        }
+        if (dueDate != null){
+            entry.getExtendedInfos().put("dueDate", dueDate);
+        }
+        try {
+            entry.setDocLifeCycle(doc.getCurrentLifeCycleState());
+        } catch (Exception e) {
+            // ignore error
+        }
+        auditLogger.addLogEntries(Collections.singletonList(entry));
+        return entry;
+    }
+
+    /**
+     * Create audit change.
+     */
+    public static void createAuditChange(DocumentModel document, Task task, String user) {
+        String taskName = task.getType();
+        List<TaskComment> comments = task.getComments();
+        String comment = "";
+        if (comments == null || comments.isEmpty()) {
+            comment = "Workflow changed by " + user;
+        } else {
+            TaskComment taskComment = comments.get(0);
+            comment = taskComment.getText() + " at "
+                    + DateUtils.format(taskComment.getCreationDate().getTime(), "yyyy-MM-dd HH:mm");
+        }
+        ExtendedInfo directive = ExtendedInfoImpl.createExtendedInfo(task.getDirective());
+        ExtendedInfo dueDate = ExtendedInfoImpl.createExtendedInfo(task.getDueDate());
+        WorkflowUtils.newEntry(document, user,
+                taskName, WorkflowExtConstants.WORKFLOW_CATEGORY, comment, directive, dueDate);
+    }
+
 }

@@ -390,7 +390,7 @@
 
 
 	<properties>
-		<nuxeo.platform.version>6.0-HF20</nuxeo.platform.version>
+		<nuxeo.platform.version>7.10</nuxeo.platform.version>
 	</properties>
 
 </project>

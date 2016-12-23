@@ -2,6 +2,7 @@ package org.athento.nuxeo.wf.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.athento.nuxeo.wf.utils.WorkflowExtConstants;
 import org.athento.nuxeo.wf.utils.WorkflowUtils;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -101,7 +102,7 @@ public class WorkflowChangeListener implements EventListener {
                 }
                 String autoSubscribeUsers = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
                         "extendedWF:autoSubscribeUsers", String.class);
-                if (autoSubscribeUsers != null) {
+                if (autoSubscribeUsers != null && !autoSubscribeUsers.isEmpty()) {
                     DocumentModel taskDoc = session.getDocument(new IdRef(task.getId()));
                     if (taskDoc != null) {
                         String[] users = autoSubscribeUsers.split(",");
