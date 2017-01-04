@@ -66,9 +66,10 @@ public class NotificationBean implements Serializable {
             // improved so all properties are loaded, and then the template dedices what to use
             properties.put("docTotalAmount", document.getPropertyValue("S_FACTURA:totalAmount"));
             properties.put("docSubject", document.getPropertyValue("S_FACTURA:subject"));
-            if (!nodeId.equals("preTask") & (!nodeId.equals("pre-evaluation"))) {
+            if (!nodeId.equals("preTask") & !nodeId.equals("pre-evaluation")
+                    & !nodeId.equals("selectUserTask") & !nodeId.equals("approvalTask")) {
                 // In preTask, relation to the project is still not known so these next
-                // properties can not be loaded
+                // properties can not be loaded, so it happens in selectUser and Approval generic tasks.
                 properties.put("docProjectid", document.getPropertyValue("projectFile:projectid"));
                 LOG.info("For document in navigation context: " + document.getId()
                         + ". For Node equal to: " + nodeId

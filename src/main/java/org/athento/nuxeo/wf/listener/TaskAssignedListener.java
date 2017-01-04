@@ -69,7 +69,8 @@ public class TaskAssignedListener implements EventListener {
                             // improved so all properties are loaded, and then the template dedices what to use
                             properties.put("docTotalAmount", document.getPropertyValue("S_FACTURA:totalAmount"));
                             properties.put("docSubject", document.getPropertyValue("S_FACTURA:subject"));
-                            if (!nodeId.equals("preTask")) {
+                            if (!nodeId.equals("preTask") & !nodeId.equals("pre-evaluation")
+                                    & !nodeId.equals("selectUserTask") & !nodeId.equals("approvalTask")) {
                                 // In preTask, relation to the project is still not known so these next 
                                 // properties can not be loaded
                                 properties.put("docProjectid", document.getPropertyValue("projectFile:projectid"));

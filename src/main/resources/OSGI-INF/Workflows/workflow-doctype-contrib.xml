@@ -45,6 +45,16 @@
 			<schema name="var_extended-wf" />
 		</facet>
 
+		<facet name="facet-var_selectUserTask">
+			<schema name="var_selectUserTask" />
+		</facet>
+		<facet name="facet-var_approvalTask">
+			<schema name="var_approvalTask" />
+		</facet>
+		<facet name="facet-var_extended-wf-generic">
+			<schema name="var_extended-wf" />
+		</facet>
+
 	</extension>
 
 	<extension target="org.nuxeo.ecm.platform.types.TypeService"
@@ -78,6 +88,12 @@
 			src="data/schemas/var_stop-node.xsd" />
 		<schema name="var_extended-wf" prefix="var_extended-wf" override="true"
 			src="data/schemas/var_extended-wf.xsd" />
+
+		<schema name="var_selectUserTask" prefix="var_selectUserTask" override="true"
+				src="data/schemas/var_selectUserTask.xsd" />
+		<schema name="var_approvalTask" prefix="var_approvalTask" override="true"
+				src="data/schemas/var_approvalTask.xsd" />
+
 	</extension>
 
 </component>

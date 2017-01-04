@@ -100,5 +100,7 @@
 	<xs:element name="officeFifth" type="xs:boolean" />
 	<xs:element name="regionFifth" type="xs:boolean" />
 
+	<xs:element name="approvalUser" type="xs:string"/>
+
 
 </xs:schema>

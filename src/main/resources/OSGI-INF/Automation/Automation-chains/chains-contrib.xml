@@ -431,7 +431,7 @@
 			<operation id="Context.FetchDocument" />
 			<operation id="Context.RunOperation">
 				<param type="string" name="id">expr:Document["S_FACTURA:assignedTo"] ==
-					empty or Document["S_FACTURA:assignedTo"] ==
+					empty || Document["S_FACTURA:assignedTo"] ==
 					'' ? 'voidChain' :
 					'extended-wf-PREassigneeChange'</param>
 				<param type="boolean" name="isolate">false</param>
@@ -602,9 +602,13 @@
 			<operation id="Document.Fetch">
 				<param type="document" name="value">expr:item.id</param>
 			</operation>
+			<operation id="Context.SetVar">
+				<param type="string" name="name">category</param>
+				<param type="object" name="value">expr:Document["projectFile:category"]</param>
+			</operation>
 			<operation id="Context.RunOperation">
-				<param type="string" name="id">expr:Document.lifeCycle ==
-					'Validated' ? 'extended-wf-to_Finished-from-UI-individual' :
+				<param type="string" name="id">expr:(Document.lifeCycle ==
+					'Validated' || category == '02') ? 'extended-wf-to_Finished-from-UI-individual' :
 					'extended-wf-to_Finished-from-UI-not-possible'</param>
 				<param type="boolean" name="isolate">false</param>
 			</operation>

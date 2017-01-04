@@ -33,6 +33,10 @@
 		<template name="workflowTaskAssignedProjectFile" src="templates/workflowTaskAssignedProjectFile.ftl" />
 		<template name="workflowTaskAssignedGeneric" src="templates/workflowTaskAssignedGeneric.ftl" />
 		<template name="workflowChangedGeneric" src="templates/workflowChangedGeneric.ftl" />
+
+		<template name="workflowTaskAssignedExtApprovalTask" src="templates/workflowTaskAssignedExtApprovalTask.ftl" />
+		<template name="workflowTaskAssignedExtSelectUserTask" src="templates/workflowTaskAssignedExtSelectUserTask.ftl" />
+
 	</extension>
 
 
