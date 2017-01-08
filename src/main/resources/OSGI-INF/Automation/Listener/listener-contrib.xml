@@ -22,6 +22,12 @@
             <event>documentCreated</event>
         </listener>
 
+        <!-- Update document workflow listener -->
+        <listener name="UpdatedDocumentWorkflowListener" async="false" priority="1"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.UpdateDocumentWorkflowListener">
+            <event>documentModified</event>
+        </listener>
+
     </extension>
 
     <extension

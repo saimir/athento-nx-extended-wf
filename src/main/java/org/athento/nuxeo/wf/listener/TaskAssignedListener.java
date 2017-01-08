@@ -121,7 +121,7 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("docSummary", document.getPropertyValue("projectFile:summary"));
 
                         }
-
+                        // Check document content
                         if (WorkflowUtils.hasContent(document)) {
                             // Set preview url
                             properties.put("previewUrl", "/restAPI/athpreview/default/" + document.getId()

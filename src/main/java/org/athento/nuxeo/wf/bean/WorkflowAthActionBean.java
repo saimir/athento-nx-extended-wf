@@ -48,10 +48,13 @@ public class WorkflowAthActionBean implements Serializable {
     public void observerAndRaiseForEvents() {
         DocumentModel document = navigationContext.getCurrentDocument();
         // Get task document from current document
-        DocumentModel taskDoc = WorkflowUtils.getTaskDocument(documentManager, document);
+        DocumentModel taskDoc = WorkflowUtils.getTaskDocument(documentManager, document, "ended");
         EventContext eventContext = new DocumentEventContext(documentManager,
                 documentManager.getPrincipal(),
                 document);
+        if (taskDoc == null) {
+            return;
+        }
         Task task = taskDoc.getAdapter(Task.class);
         eventContext.setProperty("taskInstance", task);
         WorkflowUtils.initBindings(eventContext.getProperties(), eventContext.getCoreSession(), document);
@@ -162,7 +165,10 @@ public class WorkflowAthActionBean implements Serializable {
      * @return
      */
     private boolean hasContent(DocumentModel document) {
-        return document.getPropertyValue("file:content") != null;
+        if (document.hasSchema("file")) {
+            return document.getPropertyValue("file:content") != null;
+        }
+        return false;
     }
 
     /**

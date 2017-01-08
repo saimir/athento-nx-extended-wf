@@ -1,26 +1,34 @@
 package org.athento.nuxeo.wf.utils;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.event.EventContext;
+import org.nuxeo.ecm.platform.actions.ActionContext;
+import org.nuxeo.ecm.platform.actions.ejb.ActionManager;
+import org.nuxeo.ecm.platform.actions.jsf.JSFActionContext;
+import org.nuxeo.ecm.platform.actions.seam.SeamActionContext;
 import org.nuxeo.ecm.platform.audit.api.AuditLogger;
 import org.nuxeo.ecm.platform.audit.api.ExtendedInfo;
 import org.nuxeo.ecm.platform.audit.api.LogEntry;
 import org.nuxeo.ecm.platform.audit.impl.ExtendedInfoImpl;
 import org.nuxeo.ecm.platform.routing.api.DocumentRoutingConstants;
+import org.nuxeo.ecm.platform.routing.api.DocumentRoutingService;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphNode;
 import org.nuxeo.ecm.platform.routing.core.impl.GraphRoute;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.TaskComment;
+import org.nuxeo.ecm.platform.ui.web.util.SeamContextHelper;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.ecm.tokenauth.service.TokenAuthenticationService;
 import org.nuxeo.runtime.api.Framework;
 import org.restlet.util.DateUtils;
 
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.*;
 
@@ -125,12 +133,14 @@ public final class WorkflowUtils {
     /**
      * Get task document.
      *
+     * @param session is the session
      * @param doc is the document
+     * @param state is the state of task
      * @return
      */
-    public static DocumentModel getTaskDocument(CoreSession session, DocumentModel doc) {
+    public static DocumentModel getTaskDocument(CoreSession session, DocumentModel doc, String state) {
         DocumentModelList tasks =
-                session.query("SELECT * FROM TaskDoc WHERE nt:targetDocumentId = '" + doc.getId() + "' AND ecm:currentLifeCycleState = 'ended' ORDER BY dc:modified DESC");
+                session.query("SELECT * FROM TaskDoc WHERE nt:targetDocumentId = '" + doc.getId() + "' AND ecm:currentLifeCycleState = '" + state + "' ORDER BY dc:modified DESC");
         if (!tasks.isEmpty()) {
             return tasks.get(0);
         }
@@ -156,7 +166,10 @@ public final class WorkflowUtils {
      * @return
      */
     public static boolean hasContent(DocumentModel document) {
-        return document.getPropertyValue("file:content") != null;
+        if (document.hasSchema("file")) {
+            return document.getPropertyValue("file:content") != null;
+        }
+        return false;
     }
 
     /**
@@ -370,10 +383,81 @@ public final class WorkflowUtils {
             comment = taskComment.getText() + " at "
                     + DateUtils.format(taskComment.getCreationDate().getTime(), "yyyy-MM-dd HH:mm");
         }
-        ExtendedInfo directive = ExtendedInfoImpl.createExtendedInfo(task.getDirective());
-        ExtendedInfo dueDate = ExtendedInfoImpl.createExtendedInfo(task.getDueDate());
+        ExtendedInfoImpl.StringInfo directive = (ExtendedInfoImpl.StringInfo) ExtendedInfoImpl.createExtendedInfo(task.getDirective() != null && !task.getDirective().isEmpty() ? task.getDirective() : task.getType());
+        ExtendedInfoImpl.DateInfo dueDate = (ExtendedInfoImpl.DateInfo) ExtendedInfoImpl.createExtendedInfo(task.getDueDate());
         WorkflowUtils.newEntry(document, user,
                 taskName, WorkflowExtConstants.WORKFLOW_CATEGORY, comment, directive, dueDate);
     }
 
+    /**
+     * Get first autostart route model.
+     *
+     * @return
+     * @throws ClientException
+     */
+    public static DocumentModel getRouteModelForDocument(DocumentModel document, CoreSession session) throws ClientException {
+        DocumentRoutingService documentRoutingService = Framework.getLocalService(DocumentRoutingService.class);
+        List<DocumentModel> routeModels = documentRoutingService.searchRouteModels(
+                session, "");
+        for (Iterator<DocumentModel> it = routeModels.iterator(); it.hasNext(); ) {
+            DocumentModel route = it.next();
+            Object graphRouteObj = route.getAdapter(GraphRoute.class);
+            if (graphRouteObj instanceof GraphRoute) {
+                String filter = ((GraphRoute) graphRouteObj).getAvailabilityFilter();
+                if (!StringUtils.isBlank(filter)) {
+                    if (checkActionFilter(document, session, filter)) {
+                        return route;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check action filter.
+     *
+     * @param document
+     * @param session
+     * @param filterId
+     * @return
+     */
+    private static boolean checkActionFilter(DocumentModel document, CoreSession session, String filterId) {
+        ActionManager actionService = Framework.getService(ActionManager.class);
+        return actionService.checkFilter(filterId, createActionContext(document, session));
+    }
+
+    /**
+     * Create action context.
+     *
+     * @param document
+     * @param session
+     * @return
+     */
+    private static ActionContext createActionContext(DocumentModel document, CoreSession session) {
+        ActionContext ctx;
+        FacesContext faces = FacesContext.getCurrentInstance();
+        if (faces == null) {
+            ctx = new SeamActionContext();
+        } else {
+            ctx = new JSFActionContext(faces);
+        }
+        ctx.setCurrentDocument(document);
+        ctx.setDocumentManager(session);
+        ctx.setCurrentPrincipal((NuxeoPrincipal) session.getPrincipal());
+        ctx.putLocalVariable("SeamContext", new SeamContextHelper());
+        return ctx;
+    }
+
+    /**
+     * Get document node from task.
+     *
+     * @param session
+     * @param task
+     * @return
+     */
+    public static DocumentModel getDocumentNodeFromTask(CoreSession session, Task task) {
+        String nodeStepId = task.getVariable("document.routing.step");
+        return session.getDocument(new IdRef(nodeStepId));
+    }
 }
