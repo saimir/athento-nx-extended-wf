@@ -70,7 +70,7 @@ public class UpdateDocumentWorkflowListener implements EventListener {
                     if (task.isOpened()) {
                         // Get node for the task
                         final DocumentModel routeNode = WorkflowUtils.getDocumentNodeFromTask(session, task);
-                        if (routeNode != null) {
+                        if (routeNode != null && routeNode.getCurrentLifeCycleState().equals("suspended")) {
                             LOG.debug("Route node " + routeNode.getId());
                             // Check waiting for task
                             if (isWaitingForNode(routeNode, task)) {

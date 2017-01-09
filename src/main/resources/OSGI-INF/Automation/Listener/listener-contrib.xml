@@ -8,6 +8,10 @@
                   postCommit="true" class="org.athento.nuxeo.wf.listener.TaskAssignedListener">
             <event>workflowTaskAssigned</event>
         </listener>
+        <listener name="AthentoTaskCompletedListener" async="false"
+                  postCommit="true" class="org.athento.nuxeo.wf.listener.TaskCompletedListener">
+            <event>workflowTaskCompleted</event>
+        </listener>
 
         <listener name="AthentoWorkflowChangeListener" async="false"
                   postCommit="true" class="org.athento.nuxeo.wf.listener.WorkflowChangeListener">

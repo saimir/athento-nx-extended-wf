@@ -460,4 +460,14 @@ public final class WorkflowUtils {
         String nodeStepId = task.getVariable("document.routing.step");
         return session.getDocument(new IdRef(nodeStepId));
     }
+
+    /**
+     * Get target document given the task.
+     *
+     * @param task
+     * @return
+     */
+    public static DocumentModel getTargetDocumentFromTask(CoreSession session, Task task) {
+        return session.getDocument(new IdRef(task.getTargetDocumentId()));
+    }
 }
