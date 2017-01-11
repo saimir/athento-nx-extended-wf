@@ -29,6 +29,7 @@
                         <p style="margin:0;font-size:13px;">
                         Si lo desea, puede acceder a la previsualización del documento <a style="color:#22aee8;text-decoration:underline;word-wrap:break-word !important;" href="${host}${previewUrl}">aquí</a>
                         </p><br/>
+                        </#if>
                      </td>
                     </tr>
                   </tbody>
