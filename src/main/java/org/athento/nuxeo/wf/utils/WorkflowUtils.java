@@ -390,12 +390,13 @@ public final class WorkflowUtils {
     }
 
     /**
-     * Get first autostart route model.
+     * Get route model.
      *
+     * @param document
+     * @param session
      * @return
-     * @throws ClientException
      */
-    public static DocumentModel getRouteModelForDocument(DocumentModel document, CoreSession session) throws ClientException {
+    public static DocumentModel getRouteModelForDocument(DocumentModel document, CoreSession session) {
         DocumentRoutingService documentRoutingService = Framework.getLocalService(DocumentRoutingService.class);
         List<DocumentModel> routeModels = documentRoutingService.searchRouteModels(
                 session, "");
@@ -469,5 +470,20 @@ public final class WorkflowUtils {
      */
     public static DocumentModel getTargetDocumentFromTask(CoreSession session, Task task) {
         return session.getDocument(new IdRef(task.getTargetDocumentId()));
+    }
+
+    /**
+     * Clear comment property.
+     *
+     * @param node
+     */
+    public static void clearComments(CoreSession session, GraphNode node) {
+        try {
+            LOG.info("Clearing comments for " + node.getDocument().getId());
+            node.getDocument().setPropertyValue("var-" + node.getId() + ":comment", "");
+            session.saveDocument(node.getDocument());
+        } catch (PropertyException e) {
+            LOG.warn("Node " + node.getId() + " has not comment property");
+        }
     }
 }

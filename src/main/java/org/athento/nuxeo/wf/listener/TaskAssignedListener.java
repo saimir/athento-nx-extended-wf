@@ -16,6 +16,8 @@ import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.ec.notification.NotificationConstants;
 import org.nuxeo.ecm.platform.notification.api.NotificationManager;
+import org.nuxeo.ecm.platform.routing.core.impl.GraphNode;
+import org.nuxeo.ecm.platform.routing.core.impl.GraphRoute;
 import org.nuxeo.ecm.platform.task.Task;
 import org.nuxeo.ecm.platform.task.core.service.TaskEventNotificationHelper;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
@@ -138,56 +140,77 @@ public class TaskAssignedListener implements EventListener {
                                     tokens.values().iterator().next());
                         }
                         properties.put("tokens", tokens);
-                        boolean onlyNotifyOnChanges = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
-                                "extendedWF:onlyNotifyOnChanges", Boolean.class);
-                        if (!onlyNotifyOnChanges) {
-                            // Send email to others
-                            boolean autoSubscribe = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
-                                    "extendedWF:autoSubscribeCreator", Boolean.class);
-                            if (autoSubscribe) {
-                                DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
-                                if (taskDoc != null) {
-                                    try {
-                                        String processId = (String) taskDoc.getPropertyValue("nt:processId");
-                                        DocumentModel processInstance = session.getDocument(new IdRef(processId));
-                                        String initiator = (String) processInstance.getPropertyValue("docri:initiator");
-                                        Map<String, Object> params = new HashMap<>();
-                                        params.putAll(properties);
-                                        params.put("taskId", taskId);
-                                        params.put("toUser", initiator);
-                                        params.put("template", "template:workflowTaskAssignedGeneric");
-                                        params.put("subject", "[Nuxeo]Task assigned in " + document.getName());
-                                        params.put("html", true);
-                                        WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
-                                    } catch (Exception e) {
-                                        LOG.error("Error sending notification to initiator", e);
-                                        throw new ClientException(e);
-                                    }
-                                }
-                            }
-                            String autoSubscribeUsers = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
-                                    "extendedWF:autoSubscribeUsers", String.class);
-                            if (autoSubscribeUsers != null) {
-                                DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
-                                if (taskDoc != null) {
-                                    String[] users = autoSubscribeUsers.split(",");
-                                    for (String user : users) {
-                                        try {
-                                            Map<String, Object> params = new HashMap<>();
-                                            params.putAll(properties);
-                                            params.put("taskId", taskId);
-                                            params.put("toUser", user.trim());
-                                            params.put("template", "template:workflowTaskAssignedGeneric");
-                                            params.put("subject", "[Nuxeo]Task assigned in " + document.getName());
-                                            params.put("html", true);
-                                            WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
-                                        } catch (Exception e) {
-                                            LOG.error("Error sending notification to user " + user, e);
-                                            throw new ClientException(e);
-                                        }
-                                    }
-                                }
-                            }
+                        // Clear comments
+                        Task task = WorkflowUtils.getTaskFromDocument(event.getContext());
+                        if (task != null) {
+                            DocumentModel processInstance = session.getDocument(new IdRef(task.getProcessId()));
+                            LOG.info("Process " +processInstance.getId());
+
+                        }
+                        // Notifications
+                        manageNotifications(session, event, taskId, properties, document);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Manage notifications after assignation.
+     *
+     * @param session
+     * @param event
+     * @param taskId
+     * @param properties
+     * @param document
+     */
+    private void manageNotifications(CoreSession session, Event event, String taskId, Map<String, Serializable> properties, DocumentModel document) {
+        boolean onlyNotifyOnChanges = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                "extendedWF:onlyNotifyOnChanges", Boolean.class);
+        if (!onlyNotifyOnChanges) {
+            // Send email to others
+            boolean autoSubscribe = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                    "extendedWF:autoSubscribeCreator", Boolean.class);
+            if (autoSubscribe) {
+                DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                if (taskDoc != null) {
+                    try {
+                        String processId = (String) taskDoc.getPropertyValue("nt:processId");
+                        DocumentModel processInstance = session.getDocument(new IdRef(processId));
+                        String initiator = (String) processInstance.getPropertyValue("docri:initiator");
+                        Map<String, Object> params = new HashMap<>();
+                        params.putAll(properties);
+                        params.put("taskId", taskId);
+                        params.put("toUser", initiator);
+                        params.put("template", "template:workflowTaskAssignedGeneric");
+                        params.put("subject", "[Nuxeo]Task assigned in " + document.getName());
+                        params.put("html", true);
+                        WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
+                    } catch (Exception e) {
+                        LOG.error("Error sending notification to initiator", e);
+                        throw new ClientException(e);
+                    }
+                }
+            }
+            String autoSubscribeUsers = WorkflowUtils.readConfigValue(event.getContext().getCoreSession(),
+                    "extendedWF:autoSubscribeUsers", String.class);
+            if (autoSubscribeUsers != null) {
+                DocumentModel taskDoc = session.getDocument(new IdRef(taskId));
+                if (taskDoc != null) {
+                    String[] users = autoSubscribeUsers.split(",");
+                    for (String user : users) {
+                        try {
+                            Map<String, Object> params = new HashMap<>();
+                            params.putAll(properties);
+                            params.put("taskId", taskId);
+                            params.put("toUser", user.trim());
+                            params.put("template", "template:workflowTaskAssignedGeneric");
+                            params.put("subject", "[Nuxeo]Task assigned in " + document.getName());
+                            params.put("html", true);
+                            WorkflowUtils.runOperation("Athento.SendNotificationTaskAssigned", document, params, session);
+                        } catch (Exception e) {
+                            LOG.error("Error sending notification to user " + user, e);
+                            throw new ClientException(e);
                         }
                     }
                 }
