@@ -67,7 +67,7 @@ public class TaskAssignedListener implements EventListener {
                             properties.put("nodeId", nodeId);
                             // TODO: Right now we put into properties valid and known metatadata, but this might be
                             // improved so all properties are loaded, and then the template dedices what to use
-                            properties.put("docTotalAmount", document.getPropertyValue("S_FACTURA:totalAmount"));
+                            properties.put("docTaxableIncome", document.getPropertyValue("S_FACTURA:taxableIncome"));
                             properties.put("docSubject", document.getPropertyValue("S_FACTURA:subject"));
                             if (!nodeId.equals("preTask") & !nodeId.equals("pre-evaluation")
                                     & !nodeId.equals("selectUserTask") & !nodeId.equals("approvalTask")) {
