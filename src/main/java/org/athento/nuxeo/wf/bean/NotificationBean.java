@@ -78,7 +78,8 @@ public class NotificationBean implements Serializable {
                 DocumentModel project = documentManager.getDocument(new IdRef((String) document.getPropertyValue("projectFile:projectDocid")));
                 properties.put("projectDocid", project.getId());
                 properties.put("projectBudget", project.getPropertyValue("invoicing:budget"));
-                properties.put("projectRemainingBudget", project.getPropertyValue("invoicing:remainingBudget"));
+                double remaining = (double) project.getPropertyValue("invoicing:remainingBudget") - (double) document.getPropertyValue("S_FACTURA:taxableIncome");
+                properties.put("projectRemainingBudget", remaining);
             }
         }
         if (doctype.equals("ProjectFile")) {
